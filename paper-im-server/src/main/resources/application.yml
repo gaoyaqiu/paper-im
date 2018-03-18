@@ -1,0 +1,16 @@
+server:
+    compression:
+        enabled: true
+    port: 9088
+    connection-timeout: 3000
+    undertow:
+        buffer-size: 32768
+        direct-buffers: true
+        io-threads: 2
+        worker-threads: 8
+
+spring:
+    application:
+        name: paper-im
+    profiles:
+        active: local

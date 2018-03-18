@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+
+    <context id="context1" targetRuntime="MyBatis3">
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+        <plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin"/>
+        <plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin">
+            <property name="searchString" value="Example$"/>
+            <property name="replaceString" value="Criteria"/>
+        </plugin>
+        <plugin type="org.mybatis.generator.plugins.MybatisCriteriaPlugin">
+            <!-- 如果 CommonMapper.xml 文件不存在，设置为 false，将自动生成  -->
+            <property name="commonFile" value="true"/>
+        </plugin>
+
+        <!-- 去除mapper接口中不需要的方法，改为从父类中继承 -->
+        <plugin type="org.mybatis.generator.plugins.ExtendsInterfacePlugin">
+            <property name="extendInterface" value="com.gyq.im.server.core.mapper.IBaseMapper"/>
+        </plugin>
+        <!-- 生成service -->
+        <plugin type="org.mybatis.generator.plugins.MybatisServicePlugin">
+            <property name="isService" value="true"/>
+            <!-- 引入接口继承的父类 -->
+            <property name="parentExtendInterface" value="com.gyq.im.server.core.service.IBaseService"/>
+            <!-- 引入实现类继承的父类 -->
+            <property name="implementExtendInterface" value="com.gyq.im.server.core.service.BaseService"/>
+            <!-- 自定义service接口存放目录 -->
+            <property name="targetPackage" value="com.gyq.im.server.core.service"/>
+            <!-- 自定义service实现类存放目录 -->
+            <property name="implementationPackage" value="com.gyq.im.server.core.service"/>
+            <property name="targetProject" value="./src/main/java"/>
+
+            <property name="enableInsert" value="true"/>
+            <property name="enableUpdate" value="true"/>
+            <property name="enableDeleteByPrimaryKey" value="true"/>
+            <property name="enableAddBatch" value="true"/>
+        </plugin>
+
+        <commentGenerator>
+            <!-- 删除代码中带有代码生成器的注释信息  -->
+            <property name="suppressAllComments" value="true"/>
+            <property name="suppressDate" value="true"/>
+        </commentGenerator>
+
+        <jdbcConnection driverClass="${driver}" connectionURL="${url}" userId="${user}" password="${password}"/>
+        <javaModelGenerator targetPackage="com.gyq.im.server.core.model" targetProject="${targetProject}/src/main/java"/>
+        <sqlMapGenerator targetPackage="mapper" targetProject="${targetProject}/src/main/resources"/>
+        <javaClientGenerator targetPackage="com.gyq.im.server.core.mapper"
+                             targetProject="${targetProject}/src/main/java" type="XMLMAPPER"/>
+
+        <table tableName="gyq_member" enableSelectByExample="false" enableDeleteByExample="false"
+               enableCountByExample="false" enableUpdateByExample="fasle">
+        </table>
+
+    </context>
+
+</generatorConfiguration>

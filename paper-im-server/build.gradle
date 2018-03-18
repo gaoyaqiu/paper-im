@@ -1,0 +1,20 @@
+group 'com.gyq'
+version '1.0.0'
+
+dependencies {
+    compile (
+            project(":paper-im-common"),
+            "commons-beanutils:commons-beanutils:${beanutils_version}",
+            "commons-collections:commons-collections:${collections_version}",
+            "org.aspectj:aspectjweaver:${aspectjweaver_version}",
+            "asm:asm:${asm_version}",
+            "cglib:cglib:${cglib_version}",
+            "mysql:mysql-connector-java:${mysql_connector_version}",
+            "com.alibaba:druid:${druid_version}",
+            "org.mybatis:mybatis:${mybatis_version}",
+            "org.mybatis:mybatis-spring:${mybatis_spring_version}",
+            "javax.transaction:jta:1.1",
+            "dom4j:dom4j:${dom4j_version}",
+            "commons-codec:commons-codec:${commonscodec_version}"
+    )
+}

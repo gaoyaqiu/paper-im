@@ -1,0 +1,156 @@
+buildscript {
+	ext {
+		springBootVersion = '2.0.0.RELEASE'
+	}
+	repositories {
+		jcenter()
+		maven { url "http://115.159.125.225:8081/nexus/content/groups/public" }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+group = 'com.gyq'
+version = '1.0.0'
+
+allprojects {
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
+
+	sourceCompatibility = 1.8
+	[compileJava, compileTestJava]*.options*.encoding = "UTF-8"
+
+	repositories {
+		jcenter()
+		maven { url "http://115.159.125.225:8081/nexus/content/groups/public" }
+	}
+
+	ext {
+		groovy_version = "2.4.12"
+		beanutils_version = "1.9.2"
+		collections_version = "3.2.2"
+		aspectjweaver_version = "1.8.11"
+		asm_version = "3.1"
+		cglib_version = "2.2"
+		mysql_connector_version = "5.1.44"
+		mybatis_generate_version = "1.3.3.1"
+		druid_version = "1.0.13"
+		mybatis_version = "3.4.5"
+		mybatis_spring_version = "1.3.1"
+		jackson_version = "2.6.5"
+		ehcache_version = "2.10.1"
+		dom4j_version = "1.6.1"
+		commonscodec_version = "1.10"
+		jxls_core_version = "1.0"
+		shiro_version = "1.2.3"
+		quartz_version = "2.2.2"
+		resteasy_version = "3.0.7.Final"
+		lombok_version = "1.16.8"
+		httpcomponents_client_version = "4.5.2"
+		httpcomponents_core_version = "4.4.5"
+		javax_jta_version = "1.1"
+		javax_validation_api_version = "1.1.0.Final"
+		hibernate_validator_version = "5.2.4.Final"
+		curator_version = "2.10.0"
+		gson_version = "2.6.2"
+		guava_version = "18.0"
+		commons_fileupload_version = "1.3.1"
+		logback_version = "1.2.3"
+		logstash_logback_encoder = "4.7"
+		xstream_version = "1.4.9"
+		thumbnailator_version = "0.4.8"
+	}
+
+
+	configurations {
+		compile.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+		all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+		all*.exclude group: 'org.codehaus.jackson'
+
+		mybatisGenerator
+	}
+
+
+	dependencies {
+		testCompile('org.springframework.boot:spring-boot-starter-test')
+		compile(
+				'org.springframework.boot:spring-boot-starter',
+				"org.springframework.boot:spring-boot-starter-web:${springBootVersion}",
+				"org.springframework.boot:spring-boot-starter-undertow:${springBootVersion}",
+				"org.springframework.boot:spring-boot-starter-websocket:${springBootVersion}",
+				"org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}",
+				"org.hibernate:hibernate-validator:${hibernate_validator_version}",
+				"org.apache.httpcomponents:httpclient:${httpcomponents_client_version}",
+				"org.apache.httpcomponents:httpmime:${httpcomponents_client_version}",
+				"org.apache.httpcomponents:httpcore:${httpcomponents_core_version}",
+				"org.apache.commons:commons-lang3:3.4",
+				"commons-io:commons-io:2.5",
+				"commons-codec:commons-codec:1.9",
+				"com.fasterxml.jackson.core:jackson-annotations:${jackson_version}",
+				"com.fasterxml.jackson.core:jackson-core:${jackson_version}",
+				"com.fasterxml.jackson.core:jackson-databind:${jackson_version}",
+				"org.projectlombok:lombok:${lombok_version}",
+				"javax.validation:validation-api:${javax_validation_api_version}",
+				"com.google.code.gson:gson:${gson_version}",
+				"com.google.guava:guava:${guava_version}"
+
+		)
+
+		mybatisGenerator(
+				"org.mybatis.generator:mybatis-generator-core:${mybatis_generate_version}",
+				"mysql:mysql-connector-java:${mysql_connector_version}"
+		)
+	}
+
+/**
+ * mybatis orm映射配置文件自动生成任务
+ */
+	task mybatisGenerate << {
+		def props = loadProperties(["${projectDir.path}/src/test/resources/db.properties"]);
+
+		ant.properties['targetProject'] = projectDir.path
+		ant.properties['driver'] = props['mysql.driver']
+		ant.properties['url'] = props['mysql.url']
+		ant.properties['user'] = props['mysql.username']
+		ant.properties['password'] = props['mysql.password']
+		ant.taskdef(
+				name: 'mbgenerator',
+				classname: 'org.mybatis.generator.ant.GeneratorAntTask',
+				classpath: configurations.mybatisGenerator.asPath
+		)
+		def configfile = projectDir.path + "/src/test/resources/generatorConfig.xml"
+		ant.mbgenerator(overwrite: true, configfile: configfile, verbose: true) {
+			propertyset {
+				propertyref(name: 'targetProject')
+				propertyref(name: 'driver')
+				propertyref(name: 'url')
+				propertyref(name: 'user')
+				propertyref(name: 'password')
+			}
+		}
+	}
+}
+
+
+/**
+ * 加载db配置文件
+ * @return
+ */
+def loadProperties(propFileList) {
+	Properties p = new Properties()
+	propFileList.each { String file ->
+		def temp = new Properties()
+		new File(file).withInputStream { stream ->
+			temp.load(stream)
+			temp.propertyNames().each { String K ->
+				p.setProperty(K, temp.getProperty(K));
+			}
+		}
+	}
+
+
+	return p
+}

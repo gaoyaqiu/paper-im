@@ -1,0 +1,5 @@
+rootProject.name = 'paper-im'
+
+include 'paper-im-server'
+include 'paper-im-common'
+
