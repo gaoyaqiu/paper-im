@@ -1,0 +1,13 @@
+cors:
+    filter:
+        enable: true
+db:
+    config: profiles/db.properties
+logging:
+    config: classpath:profiles/logback-spring.xml
+server:
+    tomcat:
+        basedir: /tmp
+
+
+
