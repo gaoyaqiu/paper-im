@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gyq.im.core.mapper.GyqUserMapper">
+  <resultMap id="BaseResultMap" type="com.gyq.im.core.model.GyqUser">
+    <id column="user_uid" jdbcType="BIGINT" property="userUid" />
+    <result column="user_login_name" jdbcType="VARCHAR" property="userLoginName" />
+    <result column="user_pwd" jdbcType="CHAR" property="userPwd" />
+    <result column="user_nick_name" jdbcType="VARCHAR" property="userNickName" />
+    <result column="user_mobile" jdbcType="VARCHAR" property="userMobile" />
+    <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
+    <result column="user_gender" jdbcType="INTEGER" property="userGender" />
+    <result column="user_face" jdbcType="VARCHAR" property="userFace" />
+    <result column="user_birthday" jdbcType="BIGINT" property="userBirthday" />
+    <result column="user_sign" jdbcType="VARCHAR" property="userSign" />
+    <result column="user_salt" jdbcType="CHAR" property="userSalt" />
+    <result column="user_status" jdbcType="INTEGER" property="userStatus" />
+    <result column="user_created" jdbcType="BIGINT" property="userCreated" />
+    <result column="user_updated" jdbcType="BIGINT" property="userUpdated" />
+    <result column="user_deleted" jdbcType="BIGINT" property="userDeleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    user_uid, user_login_name, user_pwd, user_nick_name, user_mobile, user_email, user_gender, 
+    user_face, user_birthday, user_sign, user_salt, user_status, user_created, user_updated, 
+    user_deleted
+  </sql>
+  <sql id="Example_Where_Clause">
+    <trim prefix="where" prefixOverrides="and|or">
+      <if test="params.userLoginName != null">
+         and user_login_name = #{params.userLoginName,jdbcType=VARCHAR}
+      </if>
+      <if test="params.userPwd != null">
+         and user_pwd = #{params.userPwd,jdbcType=CHAR}
+      </if>
+      <if test="params.userNickName != null">
+         and user_nick_name = #{params.userNickName,jdbcType=VARCHAR}
+      </if>
+      <if test="params.userMobile != null">
+         and user_mobile = #{params.userMobile,jdbcType=VARCHAR}
+      </if>
+      <if test="params.userEmail != null">
+         and user_email = #{params.userEmail,jdbcType=VARCHAR}
+      </if>
+      <if test="params.userGender != null">
+         and user_gender = #{params.userGender,jdbcType=INTEGER}
+      </if>
+      <if test="params.userFace != null">
+         and user_face = #{params.userFace,jdbcType=VARCHAR}
+      </if>
+      <if test="params.userBirthday != null">
+         and user_birthday = #{params.userBirthday,jdbcType=BIGINT}
+      </if>
+      <if test="params.userSign != null">
+         and user_sign = #{params.userSign,jdbcType=VARCHAR}
+      </if>
+      <if test="params.userSalt != null">
+         and user_salt = #{params.userSalt,jdbcType=CHAR}
+      </if>
+      <if test="params.userStatus != null">
+         and user_status = #{params.userStatus,jdbcType=INTEGER}
+      </if>
+      <if test="params.userCreated != null">
+         and user_created = #{params.userCreated,jdbcType=BIGINT}
+      </if>
+      <if test="params.userUpdated != null">
+         and user_updated = #{params.userUpdated,jdbcType=BIGINT}
+      </if>
+      <if test="params.userDeleted != null">
+         and user_deleted = #{params.userDeleted,jdbcType=BIGINT}
+      </if>
+      <if test="params.userUid != null">
+         and user_uid = #{params.userUid,jdbcType=BIGINT}
+      </if>
+      <if test="params.ids != null">
+         and user_uid in 
+		<foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+      </if>
+    </trim>
+  </sql>
+  <select id="selectByParams" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from gyq_user
+    <include refid="Example_Where_Clause" />
+  </select>
+  <select id="selectCountByParams" resultType="int">
+    select count(*) from gyq_user
+    <include refid="Example_Where_Clause" />
+  </select>
+  <select id="selectListByParams" resultMap="BaseResultMap" resultType="list">
+    select
+    <include refid="Base_Column_List" />
+    from gyq_user
+    <include refid="Example_Where_Clause" />
+    <if test="orderParam != null">
+      order by ${orderParam}
+    </if>
+    <include refid="common.Pagination_Limit" />
+  </select>
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into gyq_user (user_uid, 
+      user_login_name, user_pwd, user_nick_name, 
+      user_mobile, user_email, user_gender, 
+      user_face, user_birthday, user_sign, 
+      user_salt, user_status, user_created, 
+      user_updated, user_deleted)
+    values 
+	<foreach collection="list" item="obj" separator=",">
+	 (#{obj.userUid,jdbcType=BIGINT}, 
+      #{obj.userLoginName,jdbcType=VARCHAR}, #{obj.userPwd,jdbcType=CHAR}, #{obj.userNickName,jdbcType=VARCHAR}, 
+      #{obj.userMobile,jdbcType=VARCHAR}, #{obj.userEmail,jdbcType=VARCHAR}, #{obj.userGender,jdbcType=INTEGER}, 
+      #{obj.userFace,jdbcType=VARCHAR}, #{obj.userBirthday,jdbcType=BIGINT}, #{obj.userSign,jdbcType=VARCHAR}, 
+      #{obj.userSalt,jdbcType=CHAR}, #{obj.userStatus,jdbcType=INTEGER}, #{obj.userCreated,jdbcType=BIGINT}, 
+      #{obj.userUpdated,jdbcType=BIGINT}, #{obj.userDeleted,jdbcType=BIGINT})
+	</foreach>
+  </insert>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from gyq_user
+    where user_uid = #{userUid,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from gyq_user
+    where user_uid = #{userUid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.gyq.im.core.model.GyqUser">
+    insert into gyq_user (user_uid, user_login_name, user_pwd, 
+      user_nick_name, user_mobile, user_email, 
+      user_gender, user_face, user_birthday, 
+      user_sign, user_salt, user_status, 
+      user_created, user_updated, user_deleted
+      )
+    values (#{userUid,jdbcType=BIGINT}, #{userLoginName,jdbcType=VARCHAR}, #{userPwd,jdbcType=CHAR}, 
+      #{userNickName,jdbcType=VARCHAR}, #{userMobile,jdbcType=VARCHAR}, #{userEmail,jdbcType=VARCHAR}, 
+      #{userGender,jdbcType=INTEGER}, #{userFace,jdbcType=VARCHAR}, #{userBirthday,jdbcType=BIGINT}, 
+      #{userSign,jdbcType=VARCHAR}, #{userSalt,jdbcType=CHAR}, #{userStatus,jdbcType=INTEGER}, 
+      #{userCreated,jdbcType=BIGINT}, #{userUpdated,jdbcType=BIGINT}, #{userDeleted,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.gyq.im.core.model.GyqUser">
+    insert into gyq_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userUid != null">
+        user_uid,
+      </if>
+      <if test="userLoginName != null">
+        user_login_name,
+      </if>
+      <if test="userPwd != null">
+        user_pwd,
+      </if>
+      <if test="userNickName != null">
+        user_nick_name,
+      </if>
+      <if test="userMobile != null">
+        user_mobile,
+      </if>
+      <if test="userEmail != null">
+        user_email,
+      </if>
+      <if test="userGender != null">
+        user_gender,
+      </if>
+      <if test="userFace != null">
+        user_face,
+      </if>
+      <if test="userBirthday != null">
+        user_birthday,
+      </if>
+      <if test="userSign != null">
+        user_sign,
+      </if>
+      <if test="userSalt != null">
+        user_salt,
+      </if>
+      <if test="userStatus != null">
+        user_status,
+      </if>
+      <if test="userCreated != null">
+        user_created,
+      </if>
+      <if test="userUpdated != null">
+        user_updated,
+      </if>
+      <if test="userDeleted != null">
+        user_deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userUid != null">
+        #{userUid,jdbcType=BIGINT},
+      </if>
+      <if test="userLoginName != null">
+        #{userLoginName,jdbcType=VARCHAR},
+      </if>
+      <if test="userPwd != null">
+        #{userPwd,jdbcType=CHAR},
+      </if>
+      <if test="userNickName != null">
+        #{userNickName,jdbcType=VARCHAR},
+      </if>
+      <if test="userMobile != null">
+        #{userMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="userEmail != null">
+        #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="userGender != null">
+        #{userGender,jdbcType=INTEGER},
+      </if>
+      <if test="userFace != null">
+        #{userFace,jdbcType=VARCHAR},
+      </if>
+      <if test="userBirthday != null">
+        #{userBirthday,jdbcType=BIGINT},
+      </if>
+      <if test="userSign != null">
+        #{userSign,jdbcType=VARCHAR},
+      </if>
+      <if test="userSalt != null">
+        #{userSalt,jdbcType=CHAR},
+      </if>
+      <if test="userStatus != null">
+        #{userStatus,jdbcType=INTEGER},
+      </if>
+      <if test="userCreated != null">
+        #{userCreated,jdbcType=BIGINT},
+      </if>
+      <if test="userUpdated != null">
+        #{userUpdated,jdbcType=BIGINT},
+      </if>
+      <if test="userDeleted != null">
+        #{userDeleted,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gyq.im.core.model.GyqUser">
+    update gyq_user
+    <set>
+      <if test="userLoginName != null">
+        user_login_name = #{userLoginName,jdbcType=VARCHAR},
+      </if>
+      <if test="userPwd != null">
+        user_pwd = #{userPwd,jdbcType=CHAR},
+      </if>
+      <if test="userNickName != null">
+        user_nick_name = #{userNickName,jdbcType=VARCHAR},
+      </if>
+      <if test="userMobile != null">
+        user_mobile = #{userMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="userEmail != null">
+        user_email = #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="userGender != null">
+        user_gender = #{userGender,jdbcType=INTEGER},
+      </if>
+      <if test="userFace != null">
+        user_face = #{userFace,jdbcType=VARCHAR},
+      </if>
+      <if test="userBirthday != null">
+        user_birthday = #{userBirthday,jdbcType=BIGINT},
+      </if>
+      <if test="userSign != null">
+        user_sign = #{userSign,jdbcType=VARCHAR},
+      </if>
+      <if test="userSalt != null">
+        user_salt = #{userSalt,jdbcType=CHAR},
+      </if>
+      <if test="userStatus != null">
+        user_status = #{userStatus,jdbcType=INTEGER},
+      </if>
+      <if test="userCreated != null">
+        user_created = #{userCreated,jdbcType=BIGINT},
+      </if>
+      <if test="userUpdated != null">
+        user_updated = #{userUpdated,jdbcType=BIGINT},
+      </if>
+      <if test="userDeleted != null">
+        user_deleted = #{userDeleted,jdbcType=BIGINT},
+      </if>
+    </set>
+    where user_uid = #{userUid,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gyq.im.core.model.GyqUser">
+    update gyq_user
+    set user_login_name = #{userLoginName,jdbcType=VARCHAR},
+      user_pwd = #{userPwd,jdbcType=CHAR},
+      user_nick_name = #{userNickName,jdbcType=VARCHAR},
+      user_mobile = #{userMobile,jdbcType=VARCHAR},
+      user_email = #{userEmail,jdbcType=VARCHAR},
+      user_gender = #{userGender,jdbcType=INTEGER},
+      user_face = #{userFace,jdbcType=VARCHAR},
+      user_birthday = #{userBirthday,jdbcType=BIGINT},
+      user_sign = #{userSign,jdbcType=VARCHAR},
+      user_salt = #{userSalt,jdbcType=CHAR},
+      user_status = #{userStatus,jdbcType=INTEGER},
+      user_created = #{userCreated,jdbcType=BIGINT},
+      user_updated = #{userUpdated,jdbcType=BIGINT},
+      user_deleted = #{userDeleted,jdbcType=BIGINT}
+    where user_uid = #{userUid,jdbcType=BIGINT}
+  </update>
+</mapper>
