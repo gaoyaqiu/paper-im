@@ -4,7 +4,9 @@ import com.gyq.im.common.annoation.LogStyle;
 import com.gyq.im.common.constant.GlobalConstants;
 import com.gyq.im.common.models.ResponseEntity;
 import com.gyq.im.common.models.wrapper.ResponseFactory;
+import com.gyq.im.core.service.IGyqUserService;
 import com.gyq.im.server.api.AbstractBizBaseApi;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -15,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 public class UserApi extends AbstractBizBaseApi {
+
+    @Autowired
+    private IGyqUserService userService;
 
     /**
      * 查询用户详情.
