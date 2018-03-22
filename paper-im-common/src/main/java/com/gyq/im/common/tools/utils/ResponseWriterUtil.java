@@ -1,6 +1,5 @@
 package com.gyq.im.common.tools.utils;
 
-import com.gyq.im.common.tools.utils.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 

@@ -27,7 +27,7 @@ import javax.sql.DataSource;
 @ConditionalOnProperty("db.config")
 @EnableTransactionManagement
 @PropertySource("classpath:${db.config}")
-@MapperScan(basePackages = "com.gyq.im.server.core.mapper", sqlSessionFactoryRef = "sqlSessionFactory")
+@MapperScan(basePackages = "com.gyq.im.core.mapper", sqlSessionFactoryRef = "sqlSessionFactory")
 public class DataSourceConfig {
 
     @Bean(name = "dataSource")

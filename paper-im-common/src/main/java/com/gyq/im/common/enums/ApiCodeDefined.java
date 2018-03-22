@@ -29,6 +29,8 @@ public enum ApiCodeDefined implements IMessageEnum {
 
     ERROR_SYNTAX("参数语法错误"),
 
+    ERROR_MISSING_PARAMETER("缺少必填参数"),
+
     ERROR_USER_DATA_NOT_FOUNT("用户数据不存在");
 
     private String msg;

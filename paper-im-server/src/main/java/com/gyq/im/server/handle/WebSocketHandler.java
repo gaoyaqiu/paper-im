@@ -48,6 +48,7 @@ public class WebSocketHandler {
         String to = params.get("to").toString();
         String from = params.get("from").toString();
         String msg = params.get("message").toString();
+        log.debug("[{}]向[{}]发送消息[{}]", from, to, msg);
 
         if (!to.equals("all")){
             Map<String, Object> messageMap = new HashMap<>();

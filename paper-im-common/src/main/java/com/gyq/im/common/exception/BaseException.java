@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class BaseException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
     private String code;
     private IMessageEnum error;

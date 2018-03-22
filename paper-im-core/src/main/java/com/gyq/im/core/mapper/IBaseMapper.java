@@ -1,4 +1,5 @@
-package com.gyq.im.server.core.mapper;
+package com.gyq.im.core.mapper;
+
 
 
 import org.apache.ibatis.annotations.Param;

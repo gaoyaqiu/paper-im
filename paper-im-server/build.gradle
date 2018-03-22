@@ -3,7 +3,7 @@ version '1.0.0'
 
 dependencies {
     compile (
-            project(":paper-im-common"),
+            project(":paper-im-core"),
             "commons-beanutils:commons-beanutils:${beanutils_version}",
             "commons-collections:commons-collections:${collections_version}",
             "org.aspectj:aspectjweaver:${aspectjweaver_version}",

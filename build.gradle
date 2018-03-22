@@ -16,7 +16,6 @@ version = '1.0.0'
 
 allprojects {
 	apply plugin: 'java'
-	apply plugin: 'eclipse'
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
 
@@ -67,8 +66,7 @@ allprojects {
 
 	configurations {
 		compile.exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-		all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
-		all*.exclude group: 'org.codehaus.jackson'
+		compile.exclude module: "spring-boot-starter-tomcat"
 
 		mybatisGenerator
 	}
@@ -95,8 +93,10 @@ allprojects {
 				"org.projectlombok:lombok:${lombok_version}",
 				"javax.validation:validation-api:${javax_validation_api_version}",
 				"com.google.code.gson:gson:${gson_version}",
-				"com.google.guava:guava:${guava_version}"
+				"com.google.guava:guava:${guava_version}",
 
+				// 服务关键指标监控
+				"net.bull.javamelody:javamelody-core:1.60.0",
 		)
 
 		mybatisGenerator(
@@ -109,7 +109,7 @@ allprojects {
  * mybatis orm映射配置文件自动生成任务
  */
 	task mybatisGenerate << {
-		def props = loadProperties(["${projectDir.path}/src/test/resources/db.properties"]);
+		def props = loadProperties(["${projectDir.path}/src/main/resources/db.properties"]);
 
 		ant.properties['targetProject'] = projectDir.path
 		ant.properties['driver'] = props['mysql.driver']
@@ -121,7 +121,7 @@ allprojects {
 				classname: 'org.mybatis.generator.ant.GeneratorAntTask',
 				classpath: configurations.mybatisGenerator.asPath
 		)
-		def configfile = projectDir.path + "/src/test/resources/generatorConfig.xml"
+		def configfile = projectDir.path + "/src/main/resources/generatorConfig.xml"
 		ant.mbgenerator(overwrite: true, configfile: configfile, verbose: true) {
 			propertyset {
 				propertyref(name: 'targetProject')

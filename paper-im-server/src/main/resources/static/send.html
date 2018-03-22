@@ -63,7 +63,9 @@ limitations under the License.
 		function connect() {
             var userId = document.getElementById('from').value;
 			var target = document.getElementById('target').value;
-			ws = new WebSocket(target + userId);
+			var url = target + userId;
+			console.log(url);
+			ws = new WebSocket(url);
 			ws.onopen = function () {
 				setConnected(true);
 				log('Info: WebSocket connection opened.');

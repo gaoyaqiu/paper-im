@@ -17,19 +17,19 @@
 
         <!-- 去除mapper接口中不需要的方法，改为从父类中继承 -->
         <plugin type="org.mybatis.generator.plugins.ExtendsInterfacePlugin">
-            <property name="extendInterface" value="com.gyq.im.server.core.mapper.IBaseMapper"/>
+            <property name="extendInterface" value="com.gyq.im.core.mapper.IBaseMapper"/>
         </plugin>
         <!-- 生成service -->
         <plugin type="org.mybatis.generator.plugins.MybatisServicePlugin">
             <property name="isService" value="true"/>
             <!-- 引入接口继承的父类 -->
-            <property name="parentExtendInterface" value="com.gyq.im.server.core.service.IBaseService"/>
+            <property name="parentExtendInterface" value="com.gyq.im.core.service.IBaseService"/>
             <!-- 引入实现类继承的父类 -->
-            <property name="implementExtendInterface" value="com.gyq.im.server.core.service.BaseService"/>
+            <property name="implementExtendInterface" value="com.gyq.im.core.service.BaseService"/>
             <!-- 自定义service接口存放目录 -->
-            <property name="targetPackage" value="com.gyq.im.server.core.service"/>
+            <property name="targetPackage" value="com.gyq.im.core.service"/>
             <!-- 自定义service实现类存放目录 -->
-            <property name="implementationPackage" value="com.gyq.im.server.core.service"/>
+            <property name="implementationPackage" value="com.gyq.im.core.service"/>
             <property name="targetProject" value="./src/main/java"/>
 
             <property name="enableInsert" value="true"/>
@@ -45,12 +45,12 @@
         </commentGenerator>
 
         <jdbcConnection driverClass="${driver}" connectionURL="${url}" userId="${user}" password="${password}"/>
-        <javaModelGenerator targetPackage="com.gyq.im.server.core.model" targetProject="${targetProject}/src/main/java"/>
+        <javaModelGenerator targetPackage="com.gyq.im.server.com.gyq.im.core.model" targetProject="${targetProject}/src/main/java"/>
         <sqlMapGenerator targetPackage="mapper" targetProject="${targetProject}/src/main/resources"/>
-        <javaClientGenerator targetPackage="com.gyq.im.server.core.mapper"
+        <javaClientGenerator targetPackage="com.gyq.im.core.mapper"
                              targetProject="${targetProject}/src/main/java" type="XMLMAPPER"/>
 
-        <table tableName="gyq_member" enableSelectByExample="false" enableDeleteByExample="false"
+        <table tableName="gyq_user" enableSelectByExample="false" enableDeleteByExample="false"
                enableCountByExample="false" enableUpdateByExample="fasle">
         </table>
 
