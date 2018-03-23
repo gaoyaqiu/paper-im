@@ -2,12 +2,18 @@ package com.gyq.im.server.api.user;
 
 import com.gyq.im.common.annoation.LogStyle;
 import com.gyq.im.common.constant.GlobalConstants;
-import com.gyq.im.common.model.ResponseEntity;
-import com.gyq.im.common.model.wrapper.ResponseFactory;
+import com.gyq.im.common.enums.ApiCodeDefined;
+import com.gyq.im.common.exception.CommonBadRequestException;
 import com.gyq.im.core.service.IGyqUserService;
 import com.gyq.im.server.api.AbstractBizBaseApi;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import static com.google.common.collect.ImmutableMap.of;
 
 /**
  * 用户相关api.
@@ -21,31 +27,34 @@ public class UserApi extends AbstractBizBaseApi {
     @Autowired
     private IGyqUserService userService;
 
-    /**
+    /**p
      * 查询用户详情.
      *
      * @param uid
      * @return
      */
-    @LogStyle(version= GlobalConstants.Version.API_V1_0_0, beforeDesc ="查询用户详情:[{0}]", afterDesc = "查询用户详情返回值:[{}]")
-    @ResponseBody
+    @LogStyle(version = GlobalConstants.Version.API_V1_0_0, beforeDesc = "查询用户详情:[{0}]", afterDesc = "查询用户详情返回值:[{}]")
     @GetMapping(value = "user/get/{uid}")
     public ResponseEntity get(@PathVariable String uid) {
 
-        return ResponseFactory.wrapper();
+        return new ResponseEntity(null, null);
     }
 
     /**
-     * 注册用户.
+     * 添加用户.
      *
-     * @param uid
+     * @param
      * @return
      */
-    @LogStyle(version= GlobalConstants.Version.API_V1_0_0, beforeDesc ="添加用户:[{0}]", afterDesc = "添加用户返回值:[{}]")
-    @ResponseBody
-    @PostMapping(value = "user/create")
-    public ResponseEntity add(@PathVariable String uid) {
+    @LogStyle(version = GlobalConstants.Version.API_V1_0_0, beforeDesc = "添加用户:[{0}]", afterDesc = "添加用户返回值:[{}]")
+    @PostMapping(value = "user/add")
+    public ResponseEntity add() {
 
-        return ResponseFactory.wrapper();
+        if (1 == 2) {
+            throw new CommonBadRequestException(ApiCodeDefined.ERR_UNKOWEN);
+        }
+
+        return ResponseEntity.status(200).body(of("id", "2"));
+        //return new ResponseEntity(new CommonResponse(), HttpStatus.BAD_REQUEST);
     }
 }

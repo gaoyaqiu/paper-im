@@ -1,30 +1,16 @@
 package com.gyq.im.server.handle;
 
-
-import com.google.common.base.Strings;
-import com.gyq.im.common.enums.ApiCodeDefined;
-import com.gyq.im.common.exception.ApiException;
-import com.gyq.im.common.exception.BaseException;
-import com.gyq.im.common.model.ResponseEntity;
-import com.gyq.im.common.model.wrapper.ResponseFactory;
-import com.gyq.im.common.tools.utils.JsonUtil;
+import com.gyq.im.common.exception.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.validation.BindException;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import static org.springframework.core.annotation.AnnotatedElementUtils.findMergedAnnotation;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 /**
  * 全局统一异常处理.
@@ -35,139 +21,66 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler()
+    @ResponseBody
+    public CommonResponse<?> handleException(Exception ex) {
+        HttpStatus httpStatus = resolveAnnotatedResponseStatus(ex);
+        String message = ex.getMessage();
+        if (message == null) {
+            message = "系统错误.";
+        }
+        log.error(message, ex);
+
+        return new CommonResponse<>(ex);
+    }
+
+
     /**
-     * 自定义异常处理.
+     * 处理拒绝访问异常.
      *
      * @param ex
      * @return
-     * @throws Exception
      */
-    @ExceptionHandler(value = BaseException.class)
-    @ResponseBody
-    public ResponseEntity baseExceptionHandler(BaseException ex) throws Exception {
-        return ResponseFactory.<String>wrapper(ex);
-    }
+  /*  @ExceptionHandler({AccessDeniedException.class})
+    public CommonResponse<?> handleAccessDeniedException(Exception ex) {
+        CommonResponse errorResponse = of(FORBIDDEN.value(), ex.getMessage());
+        return new CommonResponse<>(errorResponse, new HttpHeaders(), FORBIDDEN);
+    }*/
 
     /**
-     * 404 异常处理.
+     * 处理Bean validation异常.
      *
+     * @param e
      * @return
-     * @throws Exception
      */
-    @ExceptionHandler(value = NoHandlerFoundException.class)
-    @ResponseBody
-    public ResponseEntity noHandlerExceptionHandler() throws Exception {
-        return ResponseFactory.<String>wrapper(ApiCodeDefined.URL_NOT_FOUND);
-    }
+   /* @ExceptionHandler(MethodArgumentNotValidException.class)
+    public CommonResponse<CommonResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        String errorMessage = e.getBindingResult().getFieldErrors().stream()
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.joining("|"));
+        CommonResponse response = of(BAD_REQUEST.value(), errorMessage);
+        return new CommonResponse<>(response, new HttpHeaders(), BAD_REQUEST);
+    }*/
 
     /**
-     * 未知异常处理.
+     * 处理请求超时异常.
      *
-     * @param ex
      * @return
-     * @throws Exception
      */
-    @ExceptionHandler(value = Exception.class)
-    @ResponseBody
-    public ResponseEntity exceptionHandler(Exception ex) throws Exception {
-        ResponseEntity res = otherExceptionHandle(ex);
-        if (res == null) {
-            log.error("未知异常:", ex);
-            res = ResponseFactory.<String>wrapper(ApiCodeDefined.ERROR);
+  /*  @ExceptionHandler(TransactionTimedOutException.class)
+    public CommonResponse<CommonResponse> handleTransactionTimeOutException() {
+        CommonResponse errorResponse = of(INTERNAL_SERVER_ERROR.value(), "请求超时，请重试");
+        return new CommonResponse<>(errorResponse, new HttpHeaders(), INTERNAL_SERVER_ERROR);
+    }*/
+
+    private HttpStatus resolveAnnotatedResponseStatus(Exception exception) {
+        log.error(exception.getMessage());
+
+        ResponseStatus annotation = findMergedAnnotation(exception.getClass(), ResponseStatus.class);
+        if (annotation != null) {
+            return annotation.value();
         }
 
-        return res;
-    }
-
-    /**
-     * 处理其它异常
-     *
-     * @param ex
-     * @return
-     */
-    public ResponseEntity otherExceptionHandle(Exception ex) {
-        if (ex instanceof MissingServletRequestParameterException) {
-            log.error("缺少必填参数:", ex);
-            return ResponseFactory.<String>wrapper(ApiCodeDefined.ERROR_MISSING_PARAMETER);
-        }
-        return null;
-    }
-
-    /**
-     * 请求参数语法错误.
-     *
-     * @param ex
-     * @return
-     * @throws Exception
-     */
-    @ExceptionHandler(value = HttpMessageNotReadableException.class)
-    @ResponseBody
-    public ResponseEntity httpMessageNotReadableExceptionHandler(Exception ex) throws Exception {
-        log.error("json语法错误异常:", ex);
-        return ResponseFactory.<String>wrapper(ApiCodeDefined.ERROR_SYNTAX);
-    }
-
-    /**
-     * api系统异常处理.
-     *
-     * @param ex
-     * @return
-     * @throws Exception
-     */
-    @ExceptionHandler(value = ApiException.class)
-    @ResponseBody
-    public ResponseEntity CommentExceptionHandler(ApiException ex) throws Exception {
-        log.error("api系统异常:", ex);
-
-        return ResponseFactory.wrapper(ex);
-    }
-
-    /**
-     * 参数验证异常处理.
-     *
-     * @param ex
-     * @return
-     * @throws Exception
-     */
-    @ExceptionHandler(value = {MethodArgumentNotValidException.class, BindException.class})
-    @ResponseBody
-    public ResponseEntity<List<Map<String, String>>> parameterExceptionHandler(Exception ex) throws IOException {
-        List<Map<String, String>> resErrors = new ArrayList<>();
-        List<ObjectError> errors = null;
-        if (ex instanceof MethodArgumentNotValidException) {
-            errors = ((MethodArgumentNotValidException) ex).getBindingResult().getAllErrors();
-        } else if (ex instanceof BindException) {
-            errors = ((BindException) ex).getBindingResult().getAllErrors();
-        }
-
-        for (ObjectError error : errors) {
-            Map<String, String> result = new HashMap<>();
-            result.put("message", "未知的参数错误");
-
-            if (error instanceof FieldError) {
-                FieldError fieldError = (FieldError) error;
-                String messageFormat = fieldError.getDefaultMessage();
-                String errorMessage = formatValidMessage(messageFormat);
-
-                result.put("field", fieldError.getField());
-                result.put("message", errorMessage);
-
-                String value = String.valueOf(fieldError.getRejectedValue());
-                if (!Strings.isNullOrEmpty(value)) {
-                    result.put("value", value);
-                }
-            } else {
-                result.put("message", error.getDefaultMessage());
-            }
-            resErrors.add(result);
-        }
-
-        log.error("===返回结果：{}===", JsonUtil.object2Json(resErrors));
-        return ResponseFactory.wrapper(resErrors, ApiCodeDefined.ERROR_PARAMETER);
-    }
-
-    private String formatValidMessage(String format) {
-
-        return format;
+        return INTERNAL_SERVER_ERROR;
     }
 }

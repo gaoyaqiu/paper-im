@@ -94,9 +94,6 @@ allprojects {
 				"javax.validation:validation-api:${javax_validation_api_version}",
 				"com.google.code.gson:gson:${gson_version}",
 				"com.google.guava:guava:${guava_version}",
-
-				// 服务关键指标监控
-				"net.bull.javamelody:javamelody-core:1.60.0",
 		)
 
 		mybatisGenerator(

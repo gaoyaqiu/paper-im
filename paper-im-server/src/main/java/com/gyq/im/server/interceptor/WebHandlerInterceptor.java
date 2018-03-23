@@ -1,8 +1,8 @@
 package com.gyq.im.server.interceptor;
 
-import com.gyq.im.common.enums.ApiCodeDefined;
-import com.gyq.im.common.model.ResponseEntity;
-import com.gyq.im.common.tools.utils.ResponseWriterUtil;
+import com.google.common.base.Strings;
+import com.gyq.im.common.context.ExecuteContext;
+import com.gyq.im.common.tools.utils.UUIDGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -27,17 +27,13 @@ public class WebHandlerInterceptor extends HandlerInterceptorAdapter {
 
         log.debug("WebHandlerInterceptor preHandle");
 
-        // 当出现404、500错误直接返回错误信息
-        if (response.getStatus() == 500) {
-            log.error("系统发生 500 错误");
-            ResponseWriterUtil.json(response, new ResponseEntity<>(ApiCodeDefined.ERROR));
-            return false;
-        } else if (response.getStatus() == 404) {
-            log.error("系统发生 404 错误");
-            ResponseWriterUtil.json(response, new ResponseEntity<>(ApiCodeDefined.URL_NOT_FOUND));
-            return false;
+        String requestId = request.getHeader("request_id");
+        if(Strings.isNullOrEmpty(requestId)) {
+            // 生成请求id，便于查询调用链
+            requestId = UUIDGenerator.generate();
         }
 
+        ExecuteContext.initRequestId(requestId);
         return true;
     }
 
@@ -59,6 +55,7 @@ public class WebHandlerInterceptor extends HandlerInterceptorAdapter {
             HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
             throws Exception {
         log.debug("WebHandlerInterceptor afterCompletion");
+        ExecuteContext.removeContext();
     }
 
     /**
@@ -69,6 +66,7 @@ public class WebHandlerInterceptor extends HandlerInterceptorAdapter {
             HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         log.debug("WebHandlerInterceptor afterConcurrentHandlingStarted");
+        ExecuteContext.removeContext();
     }
 
 }

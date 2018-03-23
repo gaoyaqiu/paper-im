@@ -10,3 +10,10 @@ server:
     tomcat:
         basedir: /tmp
 
+javamelody:
+    enabled: true
+    name: javamelodyFilter
+    init-parameters:
+        log: true
+
+

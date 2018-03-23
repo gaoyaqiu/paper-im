@@ -1,4 +1,4 @@
-package com.gyq.im.server.context;
+package com.gyq.im.common.context;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -9,7 +9,7 @@ import java.util.Locale;
 
 /**
  * 获得spring上下文.
- * <p>
+ *
  * author gaoyaqiu
  */
 @Component
@@ -27,7 +27,6 @@ public class SpringContextUtil implements ApplicationContextAware {
         }
     }
 
-    @Deprecated
     public static Object getBean(String beanName) throws BeansException {
         return context.getBean(beanName);
     }
