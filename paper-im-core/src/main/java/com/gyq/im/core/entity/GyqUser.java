@@ -1,4 +1,4 @@
-package com.gyq.im.core.model;
+package com.gyq.im.core.entity;
 
 import java.io.Serializable;
 public class GyqUser implements Serializable {

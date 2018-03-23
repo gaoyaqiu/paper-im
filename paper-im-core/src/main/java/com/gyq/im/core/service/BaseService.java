@@ -1,9 +1,9 @@
 package com.gyq.im.core.service;
 
-import com.gyq.im.common.models.Order;
+import com.gyq.im.common.model.Order;
+import com.gyq.im.common.model.RollPage;
 import com.gyq.im.common.tools.utils.ClearNullUtil;
 import com.gyq.im.core.mapper.IBaseMapper;
-import com.gyq.im.core.model.RollPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,7 @@ public abstract class BaseService<M extends Serializable, T extends IBaseMapper<
 
     public abstract M modifyBasic(M obj) throws Exception;
 
-    public abstract M delBasic(String obj) throws Exception;
+    public abstract M delBasic(long obj) throws Exception;
 
     @Override
     public M findObjByKey(Object seq) throws Exception {

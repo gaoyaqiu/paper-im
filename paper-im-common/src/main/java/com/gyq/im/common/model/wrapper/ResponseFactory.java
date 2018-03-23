@@ -1,8 +1,8 @@
-package com.gyq.im.common.models.wrapper;
+package com.gyq.im.common.model.wrapper;
 
 
 import com.gyq.im.common.enums.ApiCodeDefined;
-import com.gyq.im.common.models.ResponseEntity;
+import com.gyq.im.common.model.ResponseEntity;
 import com.gyq.im.common.exception.BaseException;
 
 /**

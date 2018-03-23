@@ -2,8 +2,8 @@ package com.gyq.im.server.api.user;
 
 import com.gyq.im.common.annoation.LogStyle;
 import com.gyq.im.common.constant.GlobalConstants;
-import com.gyq.im.common.models.ResponseEntity;
-import com.gyq.im.common.models.wrapper.ResponseFactory;
+import com.gyq.im.common.model.ResponseEntity;
+import com.gyq.im.common.model.wrapper.ResponseFactory;
 import com.gyq.im.core.service.IGyqUserService;
 import com.gyq.im.server.api.AbstractBizBaseApi;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.gyq.im.common.models;
+package com.gyq.im.common.model;
 
 import com.gyq.im.common.tools.utils.ArrayUtil;
 

@@ -1,7 +1,7 @@
 package com.gyq.im.server.interceptor;
 
 import com.gyq.im.common.enums.ApiCodeDefined;
-import com.gyq.im.common.models.ResponseEntity;
+import com.gyq.im.common.model.ResponseEntity;
 import com.gyq.im.common.tools.utils.ResponseWriterUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.ModelAndView;

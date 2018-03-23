@@ -1,4 +1,4 @@
-package com.gyq.im.common.models;
+package com.gyq.im.common.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gyq.im.common.annoation.BeanCopyIgnore;

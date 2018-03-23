@@ -1,4 +1,4 @@
-package com.gyq.im.core.model;
+package com.gyq.im.common.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 

@@ -1,8 +1,8 @@
 package com.gyq.im.core.service;
 
-import com.gyq.im.common.models.Order;
+import com.gyq.im.common.model.Order;
+import com.gyq.im.common.model.RollPage;
 import com.gyq.im.core.mapper.IBaseMapper;
-import com.gyq.im.core.model.RollPage;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
@@ -46,12 +46,12 @@ public interface IBaseService<M extends Serializable, T extends IBaseMapper<M>> 
     /**
      * 删除记录
      *
-     * @param obj
+     * @param key
      * @throws Exception
      * @author three
      */
     @Transactional
-    M delBasic(String obj) throws Exception;
+    M delBasic(long key) throws Exception;
 
     /**
      * 根据主键查询记录

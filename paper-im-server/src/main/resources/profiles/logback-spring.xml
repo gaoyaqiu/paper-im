@@ -49,7 +49,7 @@
 	</springProfile>
 
 	<springProfile name="prod">
-		<logger name="com.changyi" level="info"/>
+		<logger name="com.gyq.im" level="info"/>
 	</springProfile>
 
 
