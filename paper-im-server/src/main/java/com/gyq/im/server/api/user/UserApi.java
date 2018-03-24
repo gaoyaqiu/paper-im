@@ -4,6 +4,7 @@ import com.gyq.im.common.annoation.LogStyle;
 import com.gyq.im.common.constant.GlobalConstants;
 import com.gyq.im.common.enums.ApiCodeDefined;
 import com.gyq.im.common.exception.CommonBadRequestException;
+import com.gyq.im.common.exception.CommonResponse;
 import com.gyq.im.core.service.IGyqUserService;
 import com.gyq.im.server.api.AbstractBizBaseApi;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,8 @@ public class UserApi extends AbstractBizBaseApi {
             throw new CommonBadRequestException(ApiCodeDefined.ERR_UNKOWEN);
         }
 
-        return ResponseEntity.status(200).body(of("id", "2"));
-        //return new ResponseEntity(new CommonResponse(), HttpStatus.BAD_REQUEST);
+        CommonResponse commonResponse = CommonResponse.newBuilder().build();
+
+        return ResponseEntity.ok(commonResponse);
     }
 }

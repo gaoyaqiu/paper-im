@@ -4,6 +4,8 @@ import com.gyq.im.common.exception.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -28,9 +30,9 @@ public class RestErrorController implements ErrorController {
     private ErrorAttributes errorAttributes;
 
     @RequestMapping(value = PATH)
-    public CommonResponse handleError(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity handleError(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> errorAttributes = getErrorAttributes(request, true);
-        return new CommonResponse(String.valueOf(response.getStatus()), (String) errorAttributes.get("error"));
+        return new ResponseEntity(CommonResponse.newBuilder().code(String.valueOf(response.getStatus())).msg((String) errorAttributes.get("error")).build(), HttpStatus.NOT_FOUND);
     }
 
     @Override

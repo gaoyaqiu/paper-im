@@ -29,7 +29,7 @@ public class WebHandlerInterceptor extends HandlerInterceptorAdapter {
 
         String requestId = request.getHeader("request_id");
         if(Strings.isNullOrEmpty(requestId)) {
-            // 生成请求id，便于查询调用链
+            // 生成请求id，便于查询请求的调用链
             requestId = UUIDGenerator.generate();
         }
 

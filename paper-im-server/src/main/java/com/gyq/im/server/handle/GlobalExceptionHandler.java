@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler()
     @ResponseBody
-    public CommonResponse<?> handleException(Exception ex) {
+    public ResponseEntity<?> handleException(Exception ex) {
         HttpStatus httpStatus = resolveAnnotatedResponseStatus(ex);
         String message = ex.getMessage();
         if (message == null) {
@@ -31,7 +31,8 @@ public class GlobalExceptionHandler {
         }
         log.error(message, ex);
 
-        return new CommonResponse<>(ex);
+//        return new ResponseEntity(ex);
+        return null;
     }
 
 

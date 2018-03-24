@@ -1,12 +1,12 @@
 package com.gyq.im.common.exception;
 
-import com.google.common.base.Strings;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gyq.im.common.context.ExecuteContext;
 import com.gyq.im.common.enums.ApiCodeDefined;
-import com.gyq.im.common.enums.IMessageEnum;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 定义返回参数.
@@ -14,44 +14,55 @@ import lombok.Getter;
  * @auther gaoyaqiu
  */
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CommonResponse<M> {
 
-    private String code;
+    private final String code;
 
-    private String msg;
+    private final String msg;
 
-    private String requestId;
+    private final String requestId;
 
-    private M data;
+    private final M data;
 
-    public CommonResponse() {
-        this.code = ApiCodeDefined.SUCCESS.getValue();
-        this.msg = ApiCodeDefined.SUCCESS.getDesc();
-        this.requestId = ExecuteContext.getContext().getRequestId();
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
-    public CommonResponse(IMessageEnum msgDefined) {
-        String enumCode = msgDefined.getValue();
-        if (Strings.isNullOrEmpty(enumCode)) {
-            enumCode = ApiCodeDefined.ERR_UNKOWEN.getValue();
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Builder<M> {
+
+        private String code = ApiCodeDefined.SUCCESS.getValue();
+
+        private String msg = ApiCodeDefined.SUCCESS.getDesc();
+
+        private String requestId = ExecuteContext.getContext().getRequestId();
+
+        private M data;
+
+        public Builder code(final String code) {
+            this.code = code;
+            return this;
         }
 
-        this.code = enumCode;
-        this.msg = msgDefined.getDesc();
-        this.requestId = ExecuteContext.getContext().getRequestId();
-    }
+        public Builder msg(final String msg) {
+            this.msg = msg;
+            return this;
+        }
 
-    public CommonResponse(String code, String msg) {
-        this.code = code;
-        this.msg = msg;
-        this.requestId = ExecuteContext.getContext().getRequestId();
-    }
+        public Builder requestId(final String requestId) {
+            this.requestId = requestId;
+            return this;
+        }
 
-    public CommonResponse(M data) {
-        this.code = ApiCodeDefined.SUCCESS.getValue();
-        this.msg = ApiCodeDefined.SUCCESS.getDesc();
-        this.data = data;
-        this.requestId = ExecuteContext.getContext().getRequestId();
+        public Builder data(final M data) {
+            this.data = data;
+            return this;
+        }
+
+        public final CommonResponse build() {
+            return new CommonResponse(code, msg, requestId, data);
+        }
     }
 }
