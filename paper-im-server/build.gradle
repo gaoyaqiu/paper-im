@@ -15,7 +15,7 @@ dependencies {
             "org.mybatis:mybatis-spring:${mybatis_spring_version}",
             "javax.transaction:jta:1.1",
             "dom4j:dom4j:${dom4j_version}",
-            "commons-codec:commons-codec:${commonscodec_version}"
-           // "org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
+            "commons-codec:commons-codec:${commonscodec_version}",
+            "org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
     )
 }

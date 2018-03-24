@@ -31,6 +31,8 @@ public enum ApiCodeDefined implements IMessageEnum {
 
     ERROR_MISSING_PARAMETER("50009", "缺少必填参数"),
 
+    ERROR_REQUEST_TIMEOUT("50010", "请求超时，请重试"),
+
     ERROR_USER_DATA_NOT_FOUNT("60000", "用户数据不存在");
 
     private String code;

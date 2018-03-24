@@ -1,6 +1,6 @@
 package com.gyq.im.server.api;
 
-import com.gyq.im.server.context.ExecuteContext;
+import com.gyq.im.common.context.ExecuteContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**

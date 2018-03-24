@@ -2,8 +2,6 @@ package com.gyq.im.server.api.user;
 
 import com.gyq.im.common.annoation.LogStyle;
 import com.gyq.im.common.constant.GlobalConstants;
-import com.gyq.im.common.enums.ApiCodeDefined;
-import com.gyq.im.common.exception.CommonBadRequestException;
 import com.gyq.im.common.exception.CommonResponse;
 import com.gyq.im.core.service.IGyqUserService;
 import com.gyq.im.server.api.AbstractBizBaseApi;
@@ -13,8 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import static com.google.common.collect.ImmutableMap.of;
 
 /**
  * 用户相关api.
@@ -28,7 +24,8 @@ public class UserApi extends AbstractBizBaseApi {
     @Autowired
     private IGyqUserService userService;
 
-    /**p
+    /**
+     * p
      * 查询用户详情.
      *
      * @param uid
@@ -49,14 +46,7 @@ public class UserApi extends AbstractBizBaseApi {
      */
     @LogStyle(version = GlobalConstants.Version.API_V1_0_0, beforeDesc = "添加用户:[{0}]", afterDesc = "添加用户返回值:[{}]")
     @PostMapping(value = "user/add")
-    public ResponseEntity add() {
-
-        if (1 == 2) {
-            throw new CommonBadRequestException(ApiCodeDefined.ERR_UNKOWEN);
-        }
-
-        CommonResponse commonResponse = CommonResponse.newBuilder().build();
-
-        return ResponseEntity.ok(commonResponse);
+    public ResponseEntity add() throws Exception {
+        return ResponseEntity.ok(CommonResponse.newBuilder().build());
     }
 }
