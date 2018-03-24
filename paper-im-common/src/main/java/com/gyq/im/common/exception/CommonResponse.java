@@ -3,6 +3,7 @@ package com.gyq.im.common.exception;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.gyq.im.common.context.ExecuteContext;
 import com.gyq.im.common.enums.ApiCodeDefined;
+import com.gyq.im.common.enums.IMessageEnum;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -64,5 +65,13 @@ public final class CommonResponse<M> {
         public final CommonResponse build() {
             return new CommonResponse(code, msg, requestId, data);
         }
+    }
+
+    public static CommonResponse of(IMessageEnum messageEnum){
+        return CommonResponse.newBuilder().code(messageEnum.getValue()).msg(messageEnum.getDesc()).build();
+    }
+
+    public static CommonResponse of(String code, String msg){
+        return CommonResponse.newBuilder().code(code).msg(msg).build();
     }
 }

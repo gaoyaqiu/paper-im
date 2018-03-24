@@ -38,6 +38,10 @@ public class JsonConverter {
         return jsonConverter;
     }
 
+    public static ObjectMapper getObjectMapper() {
+        return jsonConverter.objMapper;
+    }
+
     public String object2Json(Object objValue) {
         String rtnValue = null;
         try {

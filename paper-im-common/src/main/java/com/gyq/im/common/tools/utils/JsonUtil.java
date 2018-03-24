@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class JsonUtil {
 
-    public static String object2Json(Object objValue){
+    public static String object2Json(Object objValue) {
         return JsonConverter.getInstance().object2Json(objValue);
     }
 
@@ -25,8 +25,6 @@ public class JsonUtil {
         return (T) rtnValue;
     }
 
-
-
     public static <T> T json2Object(Class<T> targetClzz, String fieldName, String jsonString) {
         Object rtnValue = null;
         JsonConverter jsonConverter = JsonConverter.getInstance();
@@ -34,7 +32,7 @@ public class JsonUtil {
             rtnValue = jsonConverter.json2Object(targetClzz, jsonString);
         } else {
             JsonNode root = jsonConverter.json2JsonNode(jsonString);
-            if(root.get(fieldName) == null){
+            if (root.get(fieldName) == null) {
                 return null;
             }
             rtnValue = jsonConverter.json2Object(targetClzz, root.get(fieldName));

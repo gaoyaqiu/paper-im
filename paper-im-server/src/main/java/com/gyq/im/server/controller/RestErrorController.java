@@ -1,4 +1,4 @@
-package com.gyq.im.server.api;
+package com.gyq.im.server.controller;
 
 import com.gyq.im.common.exception.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;

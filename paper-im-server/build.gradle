@@ -13,9 +13,9 @@ dependencies {
             "com.alibaba:druid:${druid_version}",
             "org.mybatis:mybatis:${mybatis_version}",
             "org.mybatis:mybatis-spring:${mybatis_spring_version}",
-            "javax.transaction:jta:1.1",
             "dom4j:dom4j:${dom4j_version}",
             "commons-codec:commons-codec:${commonscodec_version}",
             "org.springframework.boot:spring-boot-starter-security:${springBootVersion}",
+            "io.jsonwebtoken:jjwt:${jwt_version}"
     )
 }

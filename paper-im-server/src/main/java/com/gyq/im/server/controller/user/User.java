@@ -1,4 +1,4 @@
-package com.gyq.im.server.entity;
+package com.gyq.im.server.controller.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

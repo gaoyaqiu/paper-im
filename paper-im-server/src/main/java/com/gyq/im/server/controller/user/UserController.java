@@ -1,10 +1,10 @@
-package com.gyq.im.server.api.user;
+package com.gyq.im.server.controller.user;
 
 import com.gyq.im.common.annoation.LogStyle;
 import com.gyq.im.common.constant.GlobalConstants;
 import com.gyq.im.common.exception.CommonResponse;
 import com.gyq.im.core.service.IGyqUserService;
-import com.gyq.im.server.api.AbstractBizBaseApi;
+import com.gyq.im.server.controller.AbstractBizApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2018/3/22
  */
 @RestController
-public class UserApi extends AbstractBizBaseApi {
+public class UserController extends AbstractBizApi {
 
     @Autowired
     private IGyqUserService userService;
@@ -47,6 +47,18 @@ public class UserApi extends AbstractBizBaseApi {
     @LogStyle(version = GlobalConstants.Version.API_V1_0_0, beforeDesc = "添加用户:[{0}]", afterDesc = "添加用户返回值:[{}]")
     @PostMapping(value = "user/add")
     public ResponseEntity add() throws Exception {
+        return ResponseEntity.ok(CommonResponse.newBuilder().build());
+    }
+
+    /**
+     * 添加用户.
+     *
+     * @param
+     * @return
+     */
+    @LogStyle(version = GlobalConstants.Version.API_V1_0_0, beforeDesc = "添加用户:[{0}]", afterDesc = "添加用户返回值:[{}]")
+    @PostMapping(value = "user/login")
+    public ResponseEntity login() throws Exception {
         return ResponseEntity.ok(CommonResponse.newBuilder().build());
     }
 }

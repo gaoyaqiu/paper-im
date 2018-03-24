@@ -14,3 +14,8 @@ spring:
         name: paper-im
     profiles:
         active: local
+
+im:
+  # token expire in 120 mins
+  tokenExpire: 120
+  signatureKey: gyq5qiPcGH9gXlJNCVza1n

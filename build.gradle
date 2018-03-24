@@ -39,7 +39,7 @@ allprojects {
 		druid_version = "1.0.13"
 		mybatis_version = "3.4.5"
 		mybatis_spring_version = "1.3.1"
-		jackson_version = "2.6.5"
+		jackson_version = "2.9.4"
 		ehcache_version = "2.10.1"
 		dom4j_version = "1.6.1"
 		commonscodec_version = "1.10"
@@ -61,6 +61,10 @@ allprojects {
 		logstash_logback_encoder = "4.7"
 		xstream_version = "1.4.9"
 		thumbnailator_version = "0.4.8"
+		jwt_version = "0.7.0"
+		commons_lang3_version = "3.4"
+		commons_io_version = "2.5"
+		commons_codec_version = "1.9"
 	}
 
 
@@ -84,9 +88,9 @@ allprojects {
 				"org.apache.httpcomponents:httpclient:${httpcomponents_client_version}",
 				"org.apache.httpcomponents:httpmime:${httpcomponents_client_version}",
 				"org.apache.httpcomponents:httpcore:${httpcomponents_core_version}",
-				"org.apache.commons:commons-lang3:3.4",
-				"commons-io:commons-io:2.5",
-				"commons-codec:commons-codec:1.9",
+				"org.apache.commons:commons-lang3:${commons_lang3_version}",
+				"commons-io:commons-io:${commons_io_version}",
+				"commons-codec:commons-codec:${commons_codec_version}",
 				"com.fasterxml.jackson.core:jackson-annotations:${jackson_version}",
 				"com.fasterxml.jackson.core:jackson-core:${jackson_version}",
 				"com.fasterxml.jackson.core:jackson-databind:${jackson_version}",
@@ -102,9 +106,9 @@ allprojects {
 		)
 	}
 
-/**
- * mybatis orm映射配置文件自动生成任务
- */
+	/**
+	 * mybatis orm映射配置文件自动生成任务
+	 */
 	task mybatisGenerate << {
 		def props = loadProperties(["${projectDir.path}/src/main/resources/db.properties"]);
 
@@ -147,7 +151,6 @@ def loadProperties(propFileList) {
 			}
 		}
 	}
-
 
 	return p
 }
