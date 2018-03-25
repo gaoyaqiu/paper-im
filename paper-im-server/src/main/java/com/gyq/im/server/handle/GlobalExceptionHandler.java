@@ -1,14 +1,17 @@
 package com.gyq.im.server.handle;
 
+import com.google.common.base.Strings;
 import com.gyq.im.common.enums.ApiCodeDefined;
 import com.gyq.im.common.exception.CommonBadRequestException;
+import com.gyq.im.common.exception.CommonInternalErrorException;
+import com.gyq.im.common.exception.CommonResourceNotFoundException;
 import com.gyq.im.common.exception.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.TransactionTimedOutException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,7 +19,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.nio.file.AccessDeniedException;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.springframework.core.annotation.AnnotatedElementUtils.findMergedAnnotation;
 import static org.springframework.http.HttpStatus.*;
@@ -45,10 +51,19 @@ public class GlobalExceptionHandler {
         return new ResponseEntity(CommonResponse.newBuilder().code(ApiCodeDefined.ERROR.getValue()).msg(ApiCodeDefined.ERROR.getDesc()).build(), new HttpHeaders(), httpStatus);
     }
 
+    @ExceptionHandler({CommonInternalErrorException.class})
+    public ResponseEntity<CommonResponse> handleInternalErrorException(CommonInternalErrorException ex) {
+        return new ResponseEntity(CommonResponse.newBuilder().code(ex.getCode()).msg(ex.getMessage()).build(), new HttpHeaders(), INTERNAL_SERVER_ERROR);
+    }
 
     @ExceptionHandler({CommonBadRequestException.class})
     public ResponseEntity<CommonResponse> handleBadRequestException(CommonBadRequestException ex) {
         return new ResponseEntity(CommonResponse.newBuilder().code(ex.getCode()).msg(ex.getMessage()).build(), new HttpHeaders(), BAD_REQUEST);
+    }
+
+    @ExceptionHandler({CommonResourceNotFoundException.class})
+    public ResponseEntity<CommonResponse> handleResourceNotFoundException(CommonResourceNotFoundException ex) {
+        return new ResponseEntity(CommonResponse.newBuilder().code(ex.getCode()).msg(ex.getMessage()).build(), new HttpHeaders(), NOT_FOUND);
     }
 
 
@@ -64,18 +79,30 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 处理Bean validation异常.
+     * 处理Bean validation 参数异常.
      *
      * @param e
      * @return
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<CommonResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        String errorMessage = e.getBindingResult().getFieldErrors().stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.joining("|"));
+        List<Map<String, String>> resErrorList = new ArrayList<>();
+        List<FieldError> fieldErrorList = e.getBindingResult().getFieldErrors();
+        for (FieldError fieldError : fieldErrorList) {
+            Map<String, String> fieldMap = new HashMap<>();
 
-        return new ResponseEntity(CommonResponse.newBuilder().code(BAD_REQUEST.toString()).msg(errorMessage).build(), new HttpHeaders(), BAD_REQUEST);
+            fieldMap.put("field", fieldError.getField());
+            fieldMap.put("message", fieldError.getDefaultMessage());
+
+            String value = String.valueOf(fieldError.getRejectedValue());
+            if(!Strings.isNullOrEmpty(value)){
+                fieldMap.put("value", value);
+            }
+
+            resErrorList.add(fieldMap);
+        }
+
+        return new ResponseEntity(CommonResponse.newBuilder().code(ApiCodeDefined.ERROR_PARAMETER.getValue()).msg(ApiCodeDefined.ERROR_PARAMETER.getDesc()).data(resErrorList).build(), new HttpHeaders(), BAD_REQUEST);
     }
 
     /**

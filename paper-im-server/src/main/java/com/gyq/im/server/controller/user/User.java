@@ -1,15 +1,15 @@
 package com.gyq.im.server.controller.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.gyq.im.common.annoation.BeanCopyIgnore;
 import com.gyq.im.server.valid.ValidGroup;
 import com.gyq.im.server.valid.ValidateMessage;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+
 
 @Getter
 @Setter
@@ -17,13 +17,16 @@ import java.io.Serializable;
 public class User implements Serializable {
     private Long userUid;
 
-    @NotNull(message = ValidateMessage.NotNull, groups = {ValidGroup.Add.class})
+    @NotEmpty(message = ValidateMessage.NotEmpty, groups = {ValidGroup.Add.class})
+    @Length(message = ValidateMessage.Length, min = 4, max = 20, groups = {ValidGroup.Add.class})
     private String userLoginName;
 
-    @NotNull(message = ValidateMessage.NotNull, groups = {ValidGroup.Add.class})
+    @NotEmpty(message = ValidateMessage.NotEmpty, groups = {ValidGroup.Add.class})
+    @Length(message = ValidateMessage.Length, min = 8, max = 20, groups = {ValidGroup.Add.class})
     private String userPwd;
 
-    @NotNull(message = ValidateMessage.NotNull, groups = {ValidGroup.Add.class})
+    @NotEmpty(message = ValidateMessage.NotEmpty, groups = {ValidGroup.Add.class})
+    @Length(message = ValidateMessage.Length, min = 2, max = 20, groups = {ValidGroup.Add.class})
     private String userNickName;
 
     private String userMobile;
@@ -46,6 +49,5 @@ public class User implements Serializable {
 
     private Long userUpdated;
 
-    @BeanCopyIgnore
     private static final long serialVersionUID = 1L;
 }

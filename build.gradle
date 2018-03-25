@@ -110,7 +110,7 @@ allprojects {
 	 * mybatis orm映射配置文件自动生成任务
 	 */
 	task mybatisGenerate << {
-		def props = loadProperties(["${projectDir.path}/src/main/resources/db.properties"]);
+		def props = loadProperties(["${projectDir.path}/src/test/resources/db.properties"]);
 
 		ant.properties['targetProject'] = projectDir.path
 		ant.properties['driver'] = props['mysql.driver']
@@ -122,7 +122,7 @@ allprojects {
 				classname: 'org.mybatis.generator.ant.GeneratorAntTask',
 				classpath: configurations.mybatisGenerator.asPath
 		)
-		def configfile = projectDir.path + "/src/main/resources/generatorConfig.xml"
+		def configfile = projectDir.path + "/src/test/resources/generatorConfig.xml"
 		ant.mbgenerator(overwrite: true, configfile: configfile, verbose: true) {
 			propertyset {
 				propertyref(name: 'targetProject')

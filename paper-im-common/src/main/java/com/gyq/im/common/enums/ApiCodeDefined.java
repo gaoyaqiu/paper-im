@@ -36,7 +36,8 @@ public enum ApiCodeDefined implements IMessageEnum {
     ERROR_REQUEST_TIMEOUT("50010", "请求超时，请重试"),
 
     ERROR_USER_DATA_NOT_FOUNT("60000", "用户数据不存在"),
-    ERROR_USER_OR_PWD("60001", "用户名或密码错误");
+    ERROR_USER_OR_PWD("60001", "用户名或密码错误"),
+    ERROR_USER_LOGIN_NAME_REPEATED("60002", "该登录名已被占用");
 
     private String code;
     private String msg;

@@ -3,5 +3,7 @@ dependencies {
             project(":paper-im-common"),
             "org.mybatis:mybatis:${mybatis_version}",
             "org.mybatis:mybatis-spring:${mybatis_spring_version}",
+            "mysql:mysql-connector-java:${mysql_connector_version}",
+            "com.alibaba:druid:${druid_version}",
     )
 }

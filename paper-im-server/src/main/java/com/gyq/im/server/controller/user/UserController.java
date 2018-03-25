@@ -3,14 +3,16 @@ package com.gyq.im.server.controller.user;
 import com.gyq.im.common.annoation.LogStyle;
 import com.gyq.im.common.constant.GlobalConstants;
 import com.gyq.im.common.exception.CommonResponse;
-import com.gyq.im.core.service.IGyqUserService;
 import com.gyq.im.server.controller.AbstractBizApi;
+import com.gyq.im.server.service.user.IUserService;
+import com.gyq.im.server.valid.ValidGroup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import static com.google.common.collect.ImmutableMap.of;
 
 /**
  * 用户相关api.
@@ -22,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController extends AbstractBizApi {
 
     @Autowired
-    private IGyqUserService userService;
+    private IUserService userService;
 
     /**
      * p
@@ -46,8 +48,9 @@ public class UserController extends AbstractBizApi {
      */
     @LogStyle(version = GlobalConstants.Version.API_V1_0_0, beforeDesc = "添加用户:[{0}]", afterDesc = "添加用户返回值:[{}]")
     @PostMapping(value = "user/add")
-    public ResponseEntity add() throws Exception {
-        return ResponseEntity.ok(CommonResponse.newBuilder().build());
+    public ResponseEntity add(@Validated(ValidGroup.Add.class) @RequestBody User user) {
+        Long userUid = userService.add(user);
+        return new ResponseEntity(CommonResponse.newBuilder().data(of("userUid", userUid)).build(), HttpStatus.CREATED);
     }
 
     /**
@@ -58,7 +61,7 @@ public class UserController extends AbstractBizApi {
      */
     @LogStyle(version = GlobalConstants.Version.API_V1_0_0, beforeDesc = "添加用户:[{0}]", afterDesc = "添加用户返回值:[{}]")
     @PostMapping(value = "user/login")
-    public ResponseEntity login() throws Exception {
+    public ResponseEntity login() {
         return ResponseEntity.ok(CommonResponse.newBuilder().build());
     }
 }

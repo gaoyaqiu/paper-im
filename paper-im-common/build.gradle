@@ -1,0 +1,7 @@
+
+dependencies {
+    compile(
+            "commons-beanutils:commons-beanutils:${beanutils_version}",
+            "cglib:cglib:${cglib_version}",
+    )
+}

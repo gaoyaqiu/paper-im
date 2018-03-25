@@ -3,6 +3,7 @@ package com.gyq.im.core.service;
 import com.gyq.im.common.enums.GlobalEnums;
 import com.gyq.im.common.tools.utils.DateUtil;
 import com.gyq.im.common.tools.utils.KeyGeneratorUtil;
+import com.gyq.im.common.tools.utils.RandomUtil;
 import com.gyq.im.core.entity.GyqUser;
 import com.gyq.im.core.mapper.GyqUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,18 +21,18 @@ public class GyqUserServiceImpl extends BaseService<GyqUser, GyqUserMapper> impl
     }
 
     @Override
-    public GyqUser addBasic(GyqUser record) {
+    public GyqUser addBasic(GyqUser obj) {
         logger.debug("新增开始");
-        record.setUserUid(KeyGeneratorUtil.getKey());
-        record.setUserStatus(GlobalEnums.Status.NEW.getValue());
-        record.setUserCreated(DateUtil.getCurrentTimeMills());
-        int n = mapper.insertSelective(record);
-		if(n != 1) {
-			logger.error("新增失败");
-		}
-        
+        obj.setUserUid(KeyGeneratorUtil.getKey());
+        obj.setUserStatus(GlobalEnums.Status.NEW.getValue());
+        obj.setUserCreated(DateUtil.getCurrentTimeMills());
+        int n = mapper.insertSelective(obj);
+        if(n != 1) {
+            logger.error("新增失败");
+        }
+
         logger.debug("新增结束");
-        return record;
+        return obj;
     }
 
     @Override
