@@ -39,7 +39,6 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
             throws AuthenticationException, IOException, ServletException {
         String tokenString = extractToken(request);
 
-
         return getAuthenticationManager().authenticate(new JwtAuthenticationToken(null, of(tokenString), null));
     }
 

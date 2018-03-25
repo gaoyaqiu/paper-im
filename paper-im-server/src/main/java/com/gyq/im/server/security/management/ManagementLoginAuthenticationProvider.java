@@ -17,7 +17,7 @@ import static com.gyq.im.server.security.management.ManagementUser.of;
 
 
 /**
- * 实现自定义认证.
+ * 验证用户有效性.
  *
  * @author gaoyaqiu
  */

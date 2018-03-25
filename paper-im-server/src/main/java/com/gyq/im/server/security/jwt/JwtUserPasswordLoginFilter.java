@@ -23,6 +23,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.util.StringUtils.isEmpty;
 
 /**
+ * security登录验证过滤器.
+ *
  * @author gaoyaqiu
  */
 public class JwtUserPasswordLoginFilter extends AbstractAuthenticationProcessingFilter {
@@ -79,6 +81,7 @@ public class JwtUserPasswordLoginFilter extends AbstractAuthenticationProcessing
         JwtToken jwtToken = (JwtToken) authResult.getCredentials();
         response.setStatus(OK.value());
         response.setContentType(APPLICATION_JSON_UTF8_VALUE);
+        response.setCharacterEncoding("UTF-8");
         objectMapper.writeValue(response.getWriter(), CommonResponse.newBuilder().data(jwtToken).build());
     }
 
