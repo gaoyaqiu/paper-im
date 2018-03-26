@@ -1,5 +1,6 @@
 .gradle
 /build/
+
 !gradle/wrapper/gradle-wrapper.jar
 .DS_Store
 *.iml
@@ -20,7 +21,7 @@
 
 ### NetBeans ###
 nbproject/private/
-build/
+paper-im-common/build/
 nbbuild/
 dist/
 nbdist/
@@ -28,6 +29,8 @@ nbdist/
 out/
 logs/
 tmp/
+paper-im-core/build/
+paper-im-server/build/
 paper-im-client/dist/
 paper-im-client/node_modules/
 paper-im-client/docs
