@@ -15,4 +15,5 @@ public interface IUserService {
      * @return
      */
     Long add(User user);
+
 }

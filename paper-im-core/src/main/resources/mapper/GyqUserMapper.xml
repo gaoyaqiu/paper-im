@@ -56,7 +56,7 @@
          and user_salt = #{params.userSalt,jdbcType=CHAR}
       </if>
       <if test="params.userStatus != null">
-         and user_status = #{params.userStatus,jdbcType=INTEGER}
+        and <![CDATA[ user_status < #{params.userStatus,jdbcType=INTEGER} ]]>
       </if>
       <if test="params.userCreated != null">
          and user_created = #{params.userCreated,jdbcType=BIGINT}

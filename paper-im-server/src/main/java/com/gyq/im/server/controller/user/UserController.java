@@ -37,7 +37,7 @@ public class UserController extends AbstractBizApi {
     @GetMapping(value = "user/get/{uid}")
     public ResponseEntity get(@PathVariable String uid) {
 
-        return new ResponseEntity(null, null);
+        return ResponseEntity.ok(CommonResponse.newBuilder().build());
     }
 
     /**
@@ -54,14 +54,14 @@ public class UserController extends AbstractBizApi {
     }
 
     /**
-     * 添加用户.
+     * 用户登录.
      *
      * @param
      * @return
      */
-    @LogStyle(version = GlobalConstants.Version.API_V1_0_0, beforeDesc = "添加用户:[{0}]", afterDesc = "添加用户返回值:[{}]")
-    @PostMapping(value = "user/login")
-    public ResponseEntity login() {
+    @LogStyle(version = GlobalConstants.Version.API_V1_0_0, beforeDesc = "用户登录:[{0}]", afterDesc = "用户登录返回值:[{}]")
+    @PostMapping(value = "user/login1111")
+    public ResponseEntity login(@RequestParam("loginName") String loginName) {
         return ResponseEntity.ok(CommonResponse.newBuilder().build());
     }
 }
