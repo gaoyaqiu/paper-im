@@ -28,7 +28,6 @@ nbdist/
 out/
 logs/
 tmp/
-paper-im-client/
 paper-im-client/dist/
 paper-im-client/node_modules/
 paper-im-client/docs
