@@ -36,7 +36,7 @@ public class ManagementWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/b/user/add");
+        web.ignoring().antMatchers("/b/user/add", "/static/*", "/server/*");
     }
 
     @Override
