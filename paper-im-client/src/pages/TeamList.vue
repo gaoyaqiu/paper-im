@@ -34,7 +34,7 @@ export default {
       })
     },
     pageTitle: function () {
-      return this.teamType === 'advanced' ? '高级群' : '讨论组'
+      return this.teamType === 'advanced' ? '群' : '讨论组'
     }
   }
 }

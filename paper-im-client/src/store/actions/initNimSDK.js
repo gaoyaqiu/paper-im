@@ -42,6 +42,12 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
 
     ws = new WebSocket(url + account);
     ws.onopen = function () {
+        if (loginInfo) {
+            // 连接上以后更新uid
+            commit('updateUserUID', loginInfo)
+
+            dispatch('hideLoading')
+        }
         console.log('Info: WebSocket connection opened.');
     };
     ws.onmessage = function (event) {
@@ -49,6 +55,8 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
     };
     ws.onclose = function () {
         console.log('Info: WebSocket connection closed.');
+        alert('网络连接状态异常')
+        location.href = config.loginUrl
     };
 
     // 初始化SDK

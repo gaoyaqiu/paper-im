@@ -46,7 +46,7 @@ public class UserController extends AbstractBizApi {
      * @param
      * @return
      */
-    @LogStyle(version = GlobalConstants.Version.API_V1_0_0, beforeDesc = "添加用户:[{0}]", afterDesc = "添加用户返回值:[{}]")
+    @LogStyle(version = GlobalConstants.Version.API_V1_0_0, beforeDesc = "添加用户:{0}", afterDesc = "添加用户返回值:{}")
     @PostMapping(value = "user/add")
     public ResponseEntity add(@Validated(ValidGroup.Add.class) @RequestBody User user) {
         Long userUid = userService.add(user);
@@ -59,7 +59,7 @@ public class UserController extends AbstractBizApi {
      * @param
      * @return
      */
-    @LogStyle(version = GlobalConstants.Version.API_V1_0_0, beforeDesc = "用户登录:[{0}]", afterDesc = "用户登录返回值:[{}]")
+    @LogStyle(version = GlobalConstants.Version.API_V1_0_0, beforeDesc = "用户登录:{0}", afterDesc = "用户登录返回值:[{}]")
     @PostMapping(value = "user/login1111")
     public ResponseEntity login(@RequestParam("loginName") String loginName) {
         return ResponseEntity.ok(CommonResponse.newBuilder().build());

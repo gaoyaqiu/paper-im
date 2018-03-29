@@ -27,7 +27,7 @@ const env = 'dev'
 
 let appConfig = {
   dev: {
-    url: 'ws://192.168.0.104:9088/server/'
+    url: 'ws://localhost:9088/server/'
   },
   prod: {
   }
