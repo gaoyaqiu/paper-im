@@ -4,6 +4,7 @@
 !gradle/wrapper/gradle-wrapper.jar
 .DS_Store
 *.iml
+*.log
 
 ### STS ###
 .apt_generated

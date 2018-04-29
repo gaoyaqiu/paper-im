@@ -15,18 +15,6 @@ group = 'com.gyq'
 version = '1.0.0'
 
 allprojects {
-	apply plugin: 'java'
-	apply plugin: 'org.springframework.boot'
-	apply plugin: 'io.spring.dependency-management'
-
-	sourceCompatibility = 1.8
-	[compileJava, compileTestJava]*.options*.encoding = "UTF-8"
-
-	repositories {
-		jcenter()
-		maven { url "http://115.159.125.225:8081/nexus/content/groups/public" }
-	}
-
 	ext {
 		groovy_version = "2.4.12"
 		beanutils_version = "1.9.2"
@@ -66,7 +54,21 @@ allprojects {
 		commons_io_version = "2.5"
 		commons_codec_version = "1.9"
 	}
+}
 
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'io.spring.dependency-management'
+
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+	[compileJava, compileTestJava]*.options*.encoding = "UTF-8"
+
+	repositories {
+		jcenter()
+		maven { url "http://115.159.125.225:8081/nexus/content/groups/public" }
+	}
 
 	configurations {
 		compile.exclude group: 'org.slf4j', module: 'slf4j-log4j12'

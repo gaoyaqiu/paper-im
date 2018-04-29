@@ -4,6 +4,7 @@ version '1.0.0'
 dependencies {
     compile (
             project(":paper-im-core"),
+            project(":paper-im-swagger"),
             "commons-beanutils:commons-beanutils:${beanutils_version}",
             "commons-collections:commons-collections:${collections_version}",
             "org.aspectj:aspectjweaver:${aspectjweaver_version}",

@@ -13,7 +13,7 @@ spring:
     application:
         name: paper-im
     profiles:
-        active: local
+        active: dev
 
 im:
   # token expire in 120 mins

@@ -2,7 +2,7 @@ cors:
     filter:
         enable: true
 db:
-    config: profiles/local/db.properties
+    config: profiles/dev/db.properties
 
 logging:
     config: classpath:profiles/logback-spring.xml
@@ -15,5 +15,8 @@ javamelody:
     name: javamelodyFilter
     init-parameters:
         log: true
+
+swagger:
+  enable: true
 
 

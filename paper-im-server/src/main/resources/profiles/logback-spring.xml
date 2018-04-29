@@ -42,7 +42,7 @@
 		</encoder>
 	</appender>
 
-	<springProfile name="local">
+	<springProfile name="dev">
 		<logger name="com.gyq.im" level="debug"/>
 		<logger name="org.mybatis.spring" level="debug"/>
 		<logger name="org.apache.ibatis" level="debug"/>
@@ -54,7 +54,7 @@
 
 
 	<root level="INFO">
-		<springProfile name="local">
+		<springProfile name="dev">
 			<appender-ref ref="CONSOLE"/>
 		</springProfile>
 

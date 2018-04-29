@@ -26,12 +26,22 @@ public class WebSocketConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations(ResourceUtils.CLASSPATH_URL_PREFIX + "/static/");
+
+        // Make Swagger meta-data available via <baseURL>/v2/api-docs/
+        registry.addResourceHandler("/swagger-ui/**")
+                .addResourceLocations("classpath:/META-INF/resources/swagger-ui/");
+        // Make Swagger UI available via <baseURL>/apis.html
+        registry.addResourceHandler("/api-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new WebHandlerInterceptor()).addPathPatterns("/**")
-            .excludePathPatterns("/api");
+        registry.addInterceptor(new WebHandlerInterceptor())
+                // 拦截配置
+                .addPathPatterns("/**")
+                // 排除配置
+                .excludePathPatterns("/api", "/api-ui.html", "/v2/api-docs", "/swagger-ui/**");
     }
 
     @Bean

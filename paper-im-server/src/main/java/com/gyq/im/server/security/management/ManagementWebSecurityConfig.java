@@ -29,6 +29,7 @@ public class ManagementWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtAuthenticationEntryPoint authenticationEntryPoint;
 
+    @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(loginAuthenticationProvider);
         auth.authenticationProvider(jwtAuthenticationProvider);
@@ -36,7 +37,7 @@ public class ManagementWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/b/user/add", "/static/*", "/server/*");
+        web.ignoring().antMatchers("/b/user/add", "/static/*", "/server/*", "/api-ui.html", "/swagger-ui/**", "/v2/api-docs");
     }
 
     @Override
