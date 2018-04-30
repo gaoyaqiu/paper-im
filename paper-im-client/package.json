@@ -1,7 +1,7 @@
 {
-  "name": "NIM_WEB_HTML5_DEMO",
+  "name": "Paper-IM",
   "version": "1.0.0",
-  "description": "Web SDK Html5 Demo",
+  "description": "Gao Ya Qiu Paper IM",
   "main": "index.js",
   "scripts": {
     "start": "run-p -lns dev server",

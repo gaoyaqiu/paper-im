@@ -5,8 +5,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
@@ -16,6 +18,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 @Configuration
 @ConditionalOnProperty(name = "swagger.enable", havingValue = "true")
@@ -33,9 +37,17 @@ public class Swagger2AutoConfig {
                 .build()
                 .apiInfo(apiInfo())
                 // 添加公共参数
-           /*     .globalOperationParameters(
+                .globalOperationParameters(
                         newArrayList(
-                        ))*/
+                                new ParameterBuilder()
+                                        .name("Authorization")
+                                        .description("token")
+                                        .modelRef(new ModelRef("string"))
+                                        .parameterType("header")
+                                        .required(true)
+                                        .build()
+                        )
+                )
                 .produces(getAllProduceContentTypes())
                 .consumes(getAllConsumeContentTypes())
 //                .tags(new Tag("Pet Service", "All apis relating to pets"))

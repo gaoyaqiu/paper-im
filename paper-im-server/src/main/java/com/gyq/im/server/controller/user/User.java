@@ -19,11 +19,11 @@ public class User implements Serializable {
 
     @NotEmpty(message = ValidateMessage.NotEmpty, groups = {ValidGroup.Add.class})
     @Length(message = ValidateMessage.Length, min = 4, max = 20, groups = {ValidGroup.Add.class})
-    private String userLoginName;
+    private String loginName;
 
     @NotEmpty(message = ValidateMessage.NotEmpty, groups = {ValidGroup.Add.class})
     @Length(message = ValidateMessage.Length, min = 8, max = 20, groups = {ValidGroup.Add.class})
-    private String userPwd;
+    private String passWord;
 
     @NotEmpty(message = ValidateMessage.NotEmpty, groups = {ValidGroup.Add.class})
     @Length(message = ValidateMessage.Length, min = 2, max = 20, groups = {ValidGroup.Add.class})
@@ -40,8 +40,6 @@ public class User implements Serializable {
     private Long userBirthday;
 
     private String userSign;
-
-    private String userSalt;
 
     private Integer userStatus;
 

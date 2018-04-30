@@ -14,6 +14,15 @@ public interface IUserService {
      * @param user
      * @return
      */
-    Long add(User user);
+    Long save(User user);
+
+
+    /**
+     * 查询用户信息.
+     *
+     * @param userUid
+     * @return
+     */
+    User getUser(long userUid);
 
 }

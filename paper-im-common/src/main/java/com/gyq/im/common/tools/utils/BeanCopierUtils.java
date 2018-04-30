@@ -17,7 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BeanCopierUtils {
 
-    // 对象放入缓存提升copy效率
+    /**
+     * 对象放入缓存提升copy效率
+     */
     private static Map<String, BeanCopier> beanCopierMap = new ConcurrentHashMap<>();
 
     /**
@@ -30,7 +32,7 @@ public class BeanCopierUtils {
 
         String beanKey = source.toString() + target.toString();
 
-        BeanCopier copier = null;
+        BeanCopier copier;
         if (!beanCopierMap.containsKey(beanKey)) {
             copier = BeanCopier.create(source.getClass(), target.getClass(), false);
             beanCopierMap.put(beanKey, copier);

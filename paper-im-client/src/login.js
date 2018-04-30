@@ -37,7 +37,6 @@ var formData = new Vue({
         return
       }
       this.errorMsg = ''
-      // 本demo做一次假登录
       // 真实场景应在此向服务器发起ajax请求
       let sdktoken = md5(this.password)
       // 服务端帐号均为小写

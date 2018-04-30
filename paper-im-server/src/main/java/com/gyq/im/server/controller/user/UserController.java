@@ -27,17 +27,16 @@ public class UserController extends AbstractBizApi {
     private IUserService userService;
 
     /**
-     * p
      * 查询用户详情.
      *
-     * @param uid
      * @return
      */
     @LogStyle(version = GlobalConstants.Version.API_V1_0_0, beforeDesc = "查询用户详情:[{0}]", afterDesc = "查询用户详情返回值:[{}]")
     @GetMapping(value = "user/get/{uid}")
     public ResponseEntity get(@PathVariable String uid) {
-
-        return ResponseEntity.ok(CommonResponse.newBuilder().build());
+        Long userId = Long.parseLong(uid);
+        User user = userService.getUser(userId);
+        return ResponseEntity.ok(CommonResponse.newBuilder().data(user).build());
     }
 
     /**
@@ -49,7 +48,7 @@ public class UserController extends AbstractBizApi {
     @LogStyle(version = GlobalConstants.Version.API_V1_0_0, beforeDesc = "添加用户:{0}", afterDesc = "添加用户返回值:{}")
     @PostMapping(value = "user/add")
     public ResponseEntity add(@Validated(ValidGroup.Add.class) @RequestBody User user) {
-        Long userUid = userService.add(user);
+        Long userUid = userService.save(user);
         return new ResponseEntity(CommonResponse.newBuilder().data(of("userUid", userUid)).build(), HttpStatus.CREATED);
     }
 
