@@ -30,17 +30,15 @@ import {
 // 重新初始化 NIM SDK
 export function initNimSDK({state, commit, dispatch}, loginInfo) {
     if (state.nim) {
-        console.log("111");
         state.nim.disconnect()
     }
     dispatch('showLoading')
 
-    console.log("2222");
     var ws,
-    url = config.url,
+    url = config.wsUrl,
     account = loginInfo.uid;
 
-    ws = new WebSocket(url + account);
+    ws = new WebSocket(url + '/' + account);
     ws.onopen = function () {
         if (loginInfo) {
             // 连接上以后更新uid

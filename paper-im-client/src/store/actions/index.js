@@ -26,32 +26,13 @@ function connectNim ({state, commit, dispatch}, obj) {
     }
     if (!loginInfo.uid) {
       // 无cookie，直接跳转登录页
-      pageUtil.turnPage('无历史登录记录，请重新登录', 'login')
+      pageUtil.turnPage('', 'login')
     } else {
       // 有cookie，重新登录
       dispatch('initNimSDK', loginInfo)
     }
   }
 }
-/*
-function connectChatroom ({state, commit, dispatch}, obj) {
-  let {chatroomId} = Object.assign({}, obj)
-  const nim = state.nim
-  if (nim) {
-    dispatch('showLoading')
-    nim.getChatroomAddress({
-      chatroomId,
-      done: function getChatroomAddressDone (error, obj) {
-        if (error) {
-          alert(error.message)
-          location.href = '#/room'
-          return
-        }
-        dispatch('initChatroomSDK', obj)
-      }
-    })
-  }
-}*/
 
 export default {
   updateRefreshState ({commit}) {

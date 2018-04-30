@@ -6,6 +6,7 @@ import com.gyq.im.server.security.jwt.JwtUserPasswordLoginFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -42,7 +43,7 @@ public class ManagementWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // 禁用csrf
+        // 由于使用的是JWT，我们这里不需要csrf
         http.csrf().disable()
                 .antMatcher("/**")
                 .authorizeRequests().anyRequest().authenticated()
@@ -58,6 +59,7 @@ public class ManagementWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 // 调整为让Spring Security不创建和使用session
                 .sessionCreationPolicy(STATELESS);
+
     }
 
 }
