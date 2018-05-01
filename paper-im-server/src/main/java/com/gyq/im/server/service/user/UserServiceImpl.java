@@ -1,6 +1,7 @@
 package com.gyq.im.server.service.user;
 
 import com.gyq.im.common.enums.ApiCodeDefined;
+import com.gyq.im.common.enums.GlobalEnums;
 import com.gyq.im.common.exception.CommonInternalErrorException;
 import com.gyq.im.common.tools.utils.BeanCopierUtils;
 import com.gyq.im.common.tools.utils.MD5EncryptUtil;
@@ -79,7 +80,32 @@ public class UserServiceImpl implements IUserService {
         }
 
         if (null == gyqUser) {
-            log.error("用户[{}]不存在", userUid);
+            log.error("用户id[{}]不存在", userUid);
+            throw new CommonInternalErrorException(ApiCodeDefined.ERROR_USER_DATA_NOT_FOUNT);
+        }
+
+        BeanCopierUtils.copyProperties(gyqUser, user);
+
+        return user;
+    }
+
+    @Override
+    public User getUser(String loginName) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userLoginName", loginName);
+        params.put("userStatus", GlobalEnums.Status.DELETED.getValue());
+
+        User user = new User();
+        GyqUser gyqUser;
+        try {
+            gyqUser = userService.findObj(params);
+        } catch (Exception e) {
+            log.error("查询用户异常", e);
+            throw new CommonInternalErrorException(ApiCodeDefined.ERROR);
+        }
+
+        if (null == gyqUser) {
+            log.error("用户登录名[{}]不存在", loginName);
             throw new CommonInternalErrorException(ApiCodeDefined.ERROR_USER_DATA_NOT_FOUNT);
         }
 

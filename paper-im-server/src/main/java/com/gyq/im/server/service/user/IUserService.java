@@ -18,11 +18,20 @@ public interface IUserService {
 
 
     /**
-     * 查询用户信息.
+     * 根据主键查询用户信息.
      *
      * @param userUid
      * @return
      */
     User getUser(long userUid);
+
+
+    /**
+     * 查询用户信息.
+     *
+     * @param loginName
+     * @return
+     */
+    User getUser(String loginName);
 
 }

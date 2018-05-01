@@ -4,7 +4,6 @@ import com.gyq.im.common.enums.GlobalEnums;
 import com.gyq.im.common.tools.utils.MD5EncryptUtil;
 import com.gyq.im.core.entity.GyqUser;
 import com.gyq.im.core.service.IGyqUserService;
-import com.gyq.im.server.config.PropertiesConfig;
 import com.gyq.im.server.security.jwt.JwtAuthenticationToken;
 import com.gyq.im.server.security.jwt.JwtToken;
 import com.gyq.im.server.security.jwt.ManagementJwtService;
@@ -33,7 +32,7 @@ import static com.gyq.im.server.security.management.ManagementUser.of;
 @Slf4j
 @Component
 public class ManagementLoginAuthenticationProvider implements AuthenticationProvider {
-    private static final String AUTHENTICATION_FAILED_MESSAGE = "Authentication Failed. Invalid user name or password.";
+    private static final String AUTHENTICATION_FAILED_MESSAGE = "账号或密码错误.";
 
     // 用于发系统消息
     public static final String ADMIN_USER = "admin";
@@ -43,13 +42,9 @@ public class ManagementLoginAuthenticationProvider implements AuthenticationProv
     @Autowired
     private IGyqUserService gyqUserService;
 
-    private PropertiesConfig config;
-
     @Autowired
-    public ManagementLoginAuthenticationProvider(ManagementJwtService jwtService,
-                                                 PropertiesConfig config) {
+    public ManagementLoginAuthenticationProvider(ManagementJwtService jwtService) {
         this.jwtService = jwtService;
-        this.config = config;
     }
 
     @Override

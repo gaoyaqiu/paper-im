@@ -44,6 +44,8 @@ var formData = new Vue({
                 // 服务端帐号均为小写
                 cookie.setCookie('uid', this.account.toLowerCase())
                 cookie.setCookie('sdktoken', token)
+
+                request.defaults.headers.common.Authorization = 'Bearer ' + token
                 location.href = config.homeUrl
             }, (error) => {
                 const response = error.response.data;

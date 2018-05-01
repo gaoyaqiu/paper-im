@@ -7,20 +7,18 @@ import config from '../../configs'
 import util from '../../utils'
 
 export function formatUserInfo (obj) {
-  const nim = store.state.nim
   let gender = ''
-  switch (obj.gender) {
-    case 'male':
+  switch (obj.userGender) {
+    case 1:
       gender = '男'
       break
-    case 'female':
+    case 2:
       gender = '女'
       break
-    case 'unknown':
+    case 0:
       gender = ''
       break
   }
-
   let custom = obj.custom || ''
   try {
     custom = JSON.parse(custom)
@@ -30,44 +28,36 @@ export function formatUserInfo (obj) {
     }
   }
 
-  if (obj.avatar) {
-    obj.avatar = nim.viewImageSync({
-      url: obj.avatar, // 必填
-      thumbnail: { // 生成缩略图， 可选填
-        width: 40,
-        height: 40,
-        mode: 'cover'
-      }
-    })
-    // obj.avatar += '?imageView&thumbnail=40x40&quality=85'
-  } else {
-    obj.avatar = config.defaultUserIcon
+  if (!obj.userFace) {
+    obj.userFace = config.defaultUserIcon
   }
 
   let result = Object.assign(obj, {
-    account: obj.account,
-    nick: obj.nick || '',
-    avatar: obj.avatar || config.defaultUserIcon,
-    birth: obj.birth || '',
-    email: obj.email || '',
-    tel: obj.tel || '',
+    account: obj.userLoginName,
+    nick: obj.userNickName || '',
+    avatar: obj.userFace || config.defaultUserIcon,
+    birth: obj.userBirthday || '',
+    email: obj.userEmail || '',
+    tel: obj.userMobile || '',
     gender,
-    sign: obj.sign || '',
+    sign: obj.userSign || '',
     custom,
-    createTime: obj.createTime || (new Date()).getTime(),
-    updateTime: obj.updateTime || (new Date()).getTime()
+    createTime: obj.userCreated || (new Date()).getTime(),
+    updateTime: obj.userUpdated || (new Date()).getTime()
   })
 
   return result
 }
 
 export function onMyInfo (obj) {
+  console.log("onMyInfo------");
   obj = util.mergeObject(store.state.myInfo, obj);
   let myInfo = formatUserInfo(obj)
   store.commit('updateMyInfo', myInfo)
 }
 
 export function onUserInfo (users) {
+    console.log("onUserInfo-------");
   if (!Array.isArray(users)) {
     users = [users]
   }
