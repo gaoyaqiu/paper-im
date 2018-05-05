@@ -3,7 +3,8 @@
  */
 
 import config from '@/configs'
-import {onMyInfo, onUserInfo} from './userInfo'
+import {onMyInfo} from './userInfo'
+import {searchUserDone} from './search'
 
 export function initNimSDK({state, commit, dispatch}, loginInfo) {
     dispatch('showLoading')
@@ -25,7 +26,7 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
                 }
             };
             this.ws.onmessage = function (event) {
-                console.log('Received: ' , event.data);
+                console.log('Received: ', event.data);
                 im.onmsg(event.data);
             };
             this.ws.onclose = function () {
@@ -45,7 +46,7 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
             this.onsend(data)
         },
         onsend: function (data) {
-            console.log("onsend--->", data)
+            // console.log("onsend--->", data)
             this.ws.send(JSON.stringify(data));
         },
         onmyinfo: function () {
@@ -57,23 +58,27 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
             let cmd = msg.cmd;
             let service = msg.service;
 
-            if(service == "user") {
-                if(cmd == 'syncMyInfo') {
-                    onMyInfo(msg.response);
+            if (service == "user") {
+                // 获取当前用户信息完成
+                if (cmd == 'syncMyInfo') {
+                    onMyInfo(msg);
                 }
 
-                if(cmd == 'getUsers') {
+                // 搜索用户完成
+                if (cmd == 'getUsers') {
+                    console.log("msg", msg);
+                    searchUserDone(msg)
                 }
             }
         },
         // 搜索用户(精确搜索)
-        getUsers: function (loginName) {
+        getUser: function (account) {
             var data = {
                 service: 'user',
                 cmd: 'getUsers',
                 params: {
                     'from': loginInfo.uid,
-                    'loginName': loginName
+                    'loginName': account
                 }
             }
             this.onsend(data)

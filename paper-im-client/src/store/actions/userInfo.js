@@ -51,14 +51,18 @@ export function formatUserInfo (obj) {
 }
 
 export function onMyInfo (obj) {
-  console.log("onMyInfo------", obj);
+  let code = obj.code;
+  if(code != 20000) {
+    console.error("onMyInfo", obj.response)
+      return
+  }
+
   obj = util.mergeObject(store.state.myInfo, obj);
   let myInfo = formatUserInfo(obj)
   store.commit('updateMyInfo', myInfo)
 }
 
 export function onUserInfo (users) {
-    console.log("onUserInfo-------");
   if (!Array.isArray(users)) {
     users = [users]
   }

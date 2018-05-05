@@ -38,14 +38,14 @@ export default {
         state.myInfo = util.mergeObject(state.myInfo, myInfo)
         console.log("state.myInfo", state.myInfo);
     },
-    updateUserInfo(state, users) {
+    updateUserInfo(state, user) {
         let userInfos = state.userInfos
-        users.forEach(user => {
-            let account = user.account
-            if (account) {
-                userInfos[account] = util.mergeObject(userInfos[account], user)
-            }
-        })
+        let account = user.account
+        if (account) {
+            userInfos[account] = util.mergeObject(userInfos[account], user)
+        }
+
+        console.log("userInfos", userInfos)
         state.userInfos = util.mergeObject(state.userInfos, userInfos)
     },
     updateFriends(state, friends, cutFriends = []) {

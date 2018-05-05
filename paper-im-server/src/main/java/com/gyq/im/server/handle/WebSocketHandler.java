@@ -1,6 +1,8 @@
 package com.gyq.im.server.handle;
 
 import com.gyq.im.common.context.SpringContextUtil;
+import com.gyq.im.common.enums.ApiCodeDefined;
+import com.gyq.im.common.exception.CommonInternalErrorException;
 import com.gyq.im.common.tools.utils.JsonUtil;
 import com.gyq.im.server.controller.user.User;
 import com.gyq.im.server.service.user.IUserService;
@@ -117,8 +119,15 @@ public class WebSocketHandler {
     }
 
     private String getUsers(IUserService userService, Map<String, Object> resMap, String loginName) {
-        User user = userService.getUser(loginName);
-        resMap.put("response", user);
+        try {
+            User user = userService.getUser(loginName);
+            resMap.put("code", ApiCodeDefined.SUCCESS.getValue());
+            resMap.put("response", user);
+        } catch (CommonInternalErrorException e) {
+            resMap.put("code", e.getCode());
+            resMap.put("response", e.getMessage());
+        }
+
         String msg = JsonUtil.object2Json(resMap);
         return msg;
     }
