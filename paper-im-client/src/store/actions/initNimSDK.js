@@ -8,7 +8,7 @@ import {onMyInfo, onUserInfo} from './userInfo'
 export function initNimSDK({state, commit, dispatch}, loginInfo) {
     dispatch('showLoading')
 
-    var im = {
+    window.im = state.im = {
         url: config.wsUrl + '/' + loginInfo.uid,
         ws: null,
         init: function () {
@@ -57,7 +57,26 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
             let cmd = msg.cmd;
             let service = msg.service;
 
-            onMyInfo(msg);
+            if(service == "user") {
+                if(cmd == 'syncMyInfo') {
+                    onMyInfo(msg.response);
+                }
+
+                if(cmd == 'getUsers') {
+                }
+            }
+        },
+        // 搜索用户(精确搜索)
+        getUsers: function (loginName) {
+            var data = {
+                service: 'user',
+                cmd: 'getUsers',
+                params: {
+                    'from': loginInfo.uid,
+                    'loginName': loginName
+                }
+            }
+            this.onsend(data)
         }
     }
 

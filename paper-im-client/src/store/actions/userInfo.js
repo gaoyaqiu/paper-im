@@ -5,6 +5,7 @@
 import store from '../'
 import config from '../../configs'
 import util from '../../utils'
+import { transformDate } from '../../utils/dateUtil'
 
 export function formatUserInfo (obj) {
   let gender = ''
@@ -33,10 +34,10 @@ export function formatUserInfo (obj) {
   }
 
   let result = Object.assign(obj, {
-    account: obj.userLoginName,
+    account: obj.loginName,
     nick: obj.userNickName || '',
     avatar: obj.userFace || config.defaultUserIcon,
-    birth: obj.userBirthday || '',
+    birth: obj.userBirthday ? transformDate(obj.userBirthday) : '',
     email: obj.userEmail || '',
     tel: obj.userMobile || '',
     gender,
@@ -50,7 +51,7 @@ export function formatUserInfo (obj) {
 }
 
 export function onMyInfo (obj) {
-  console.log("onMyInfo------");
+  console.log("onMyInfo------", obj);
   obj = util.mergeObject(store.state.myInfo, obj);
   let myInfo = formatUserInfo(obj)
   store.commit('updateMyInfo', myInfo)

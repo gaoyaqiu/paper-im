@@ -1,9 +1,9 @@
 let config = {
     sdk: 'NIM_Web_SDK_v4.7.0.js',
     // 用户自定义的登录注册地址
-    loginUrl: '/webdemo/h5/login.html',
-    registUrl: '/webdemo/h5/regist.html',
-    homeUrl: '/webdemo/h5/index.html#/session',
+    loginUrl: '/im/h5/login.html',
+    registUrl: '/im/h5/regist.html',
+    homeUrl: '/im/h5/index.html#/session',
 
     // 资源路径根目录，为了方便用户部署在二级以上URL路径上
     resourceUrl: 'http://yx-web.nos.netease.com/webdoc/h5',

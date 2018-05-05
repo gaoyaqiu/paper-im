@@ -11,9 +11,8 @@ export default {
     // 切页动画 forward，backward
     transitionName: 'forward',
 
-    // IM相关
-    // NIM SDK 实例
-    nim: null,
+    // IM 实例
+    im: null,
     // 登录账户ID
     userUID: null,
     // 用户名片

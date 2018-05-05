@@ -57,9 +57,10 @@ public class WebSocketHandler {
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
         IUserService userService = (IUserService) SpringContextUtil.getBean("userServiceImpl");
-
+        log.debug("接收到客户端消息---内容为[{}]", message);
         Map<String, Object> resMap = newHashMap();
         Map<String, Object> map = JsonUtil.json2Map(null, message);
+
         // user 获取用户信息、同步个人信息、更新个人信息
         // notify 通知下线消息、下线系统消息、广播消息
         // sync 同步完成状态、同步群组人员完成状态
@@ -72,16 +73,23 @@ public class WebSocketHandler {
 
         //  用户消息
         if ("user".equals(service)) {
+            Map<String, Object> params = (Map<String, Object>) map.get("params");
+            resMap.put("service", service);
+            resMap.put("cmd", cmd);
+
             if ("syncMyInfo".equals(cmd)) {
-                Map<String, Object> params = (Map<String, Object>) map.get("params");
                 from = params.get("from").toString();
 
-                User user = userService.getUser(from);
-                resMap.put("service", service);
-                resMap.put("cmd", cmd);
-                resMap.put("response", user);
+                msg = getUsers(userService, resMap, from);
+                sendMessageTo(msg, from);
+                log.debug("向[{}]发送[{}]消息---内容为[{}]", from, cmd, msg);
+            }
 
-                msg = JsonUtil.object2Json(resMap);
+            if ("getUsers".equals(cmd)) {
+                from = params.get("from").toString();
+                String loginName = params.get("loginName").toString();
+
+                msg = getUsers(userService, resMap, loginName);
                 sendMessageTo(msg, from);
                 log.debug("向[{}]发送[{}]消息---内容为[{}]", from, cmd, msg);
             }
@@ -106,6 +114,13 @@ public class WebSocketHandler {
         } else {
             sendMessageAll("给所有人");
         }*/
+    }
+
+    private String getUsers(IUserService userService, Map<String, Object> resMap, String loginName) {
+        User user = userService.getUser(loginName);
+        resMap.put("response", user);
+        String msg = JsonUtil.object2Json(resMap);
+        return msg;
     }
 
     @OnError

@@ -13,11 +13,10 @@ export function resetSearchResult ({state, commit}) {
 
 export function searchUsers ({state, commit}, obj) {
   let {accounts, done} = obj
-  const nim = state.nim
-  if (!Array.isArray(accounts)) {
-    accounts = [accounts]
-  }
-  nim.getUsers({
+  const im = state.im
+  im.getUsers(accounts[0]);
+
+  /*im.getUsers({
     accounts,
     done: function searchUsersDone (error, users) {
       if (error) {
@@ -47,7 +46,7 @@ export function searchUsers ({state, commit}, obj) {
         done(users)
       }
     }
-  })
+  })*/
 }
 
 export function searchTeam ({ state, commit }, obj) {
