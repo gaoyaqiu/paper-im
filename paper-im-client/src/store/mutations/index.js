@@ -40,9 +40,9 @@ export default {
     },
     updateUserInfo(state, user) {
         let userInfos = state.userInfos
-        let account = user.account
-        if (account) {
-            userInfos[account] = util.mergeObject(userInfos[account], user)
+        let userUid = user.userUid
+        if (userUid) {
+            userInfos[userUid] = util.mergeObject(userInfos[userUid], user)
         }
 
         console.log("userInfos", userInfos)

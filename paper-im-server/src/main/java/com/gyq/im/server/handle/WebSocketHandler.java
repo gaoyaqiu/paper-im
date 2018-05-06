@@ -60,6 +60,9 @@ public class WebSocketHandler {
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
         log.debug("接收到客户端消息---内容为[{}]", message);
+        IUserService userService = (IUserService) SpringContextUtil.getBean("userServiceImpl");
+        IFriendService friendService = (IFriendService) SpringContextUtil.getBean("friendServiceImpl");
+
         Map<String, Object> resMap = newHashMap();
         Map<String, Object> map = JsonUtil.json2Map(null, message);
 
@@ -72,7 +75,7 @@ public class WebSocketHandler {
         String service = map.get("service").toString();
         String cmd = map.get("cmd").toString();
         Long to, from;
-        String msg;
+        String msg = "";
 
         //  用户消息
         if ("user".equals(service)) {
@@ -80,21 +83,56 @@ public class WebSocketHandler {
             resMap.put("service", service);
             resMap.put("cmd", cmd);
 
+            from = Long.valueOf(params.get("from").toString());
             if ("syncMyInfo".equals(cmd)) {
-                from = Long.valueOf(params.get("from").toString());
 
-                msg = getUser(resMap, from);
+                try {
+                    User user = userService.getUser(from);
+                    resMap.put("code", ApiCodeDefined.SUCCESS.getValue());
+                    resMap.put("response", user);
+                } catch (CommonInternalErrorException e) {
+                    resMap.put("code", e.getCode());
+                    resMap.put("response", e.getMessage());
+                }
+
+                msg = JsonUtil.object2Json(resMap);
                 sendMessageTo(msg, from);
-                log.debug("向[{}]发送[{}]消息---内容为[{}]", from, cmd, msg);
             }
 
+            // 搜索用户
             if ("getUsers".equals(cmd)) {
-                from = Long.valueOf(params.get("from").toString());
                 String loginName = params.get("loginName").toString();
-                msg = getUser(resMap, loginName, from);
+                try {
+                    User user = userService.getUser(loginName, from);
+                    resMap.put("code", ApiCodeDefined.SUCCESS.getValue());
+                    resMap.put("response", user);
+                } catch (CommonInternalErrorException e) {
+                    resMap.put("code", e.getCode());
+                    resMap.put("response", e.getMessage());
+                }
+
+                msg = JsonUtil.object2Json(resMap);
                 sendMessageTo(msg, from);
-                log.debug("向[{}]发送[{}]消息---内容为[{}]", from, cmd, msg);
             }
+
+            // 添加好友
+            if ("addFriend".equals(cmd)) {
+                Long friendUid = Long.valueOf(params.get("friendUid").toString());
+
+                try {
+                    User user = friendService.addFriend(from, friendUid);
+                    resMap.put("code", ApiCodeDefined.SUCCESS.getValue());
+                    resMap.put("response", user);
+                } catch (CommonInternalErrorException e) {
+                    resMap.put("code", e.getCode());
+                    resMap.put("response", e.getMessage());
+                }
+
+                msg = JsonUtil.object2Json(resMap);
+                sendMessageTo(msg, from);
+            }
+
+            log.debug("向[{}]发送[{}]消息---内容为[{}]", from, cmd, msg);
         } else if ("".equals(service)) {
 
         }
@@ -115,61 +153,6 @@ public class WebSocketHandler {
         } else {
             sendMessageAll("给所有人");
         }*/
-    }
-
-    private String getUser(Map<String, Object> resMap, String loginName, Long currendUid) {
-        IUserService userService = (IUserService) SpringContextUtil.getBean("userServiceImpl");
-        IFriendService friendService = (IFriendService) SpringContextUtil.getBean("friendServiceImpl");
-        try {
-            User user = userService.getUser(loginName);
-            // 查询对方是否是自己好友
-            if (currendUid != null) {
-                boolean isFriend = friendService.isFriend(currendUid, user.getUserUid());
-                user.setIsFriend(isFriend);
-            }
-
-            resMap.put("code", ApiCodeDefined.SUCCESS.getValue());
-            resMap.put("response", user);
-        } catch (CommonInternalErrorException e) {
-            resMap.put("code", e.getCode());
-            resMap.put("response", e.getMessage());
-        }
-
-        String msg = JsonUtil.object2Json(resMap);
-        return msg;
-    }
-
-    private String getUser(Map<String, Object> resMap, Long uid, Long currendUid) {
-        IUserService userService = (IUserService) SpringContextUtil.getBean("userServiceImpl");
-        IFriendService friendService = (IFriendService) SpringContextUtil.getBean("friendServiceImpl");
-        try {
-            User user = userService.getUser(uid);
-            // 查询对方是否是自己好友
-            if (currendUid != null) {
-                boolean isFriend = friendService.isFriend(currendUid, uid);
-                user.setIsFriend(isFriend);
-            }
-
-            resMap.put("code", ApiCodeDefined.SUCCESS.getValue());
-            resMap.put("response", user);
-        } catch (CommonInternalErrorException e) {
-            resMap.put("code", e.getCode());
-            resMap.put("response", e.getMessage());
-        }
-
-        String msg = JsonUtil.object2Json(resMap);
-        return msg;
-    }
-
-    /**
-     * 获取用户信息，不验证是否是自己好友.
-     *
-     * @param resMap
-     * @param uid
-     * @return
-     */
-    private String getUser(Map<String, Object> resMap, Long uid) {
-        return getUser(resMap, uid, null);
     }
 
     @OnError

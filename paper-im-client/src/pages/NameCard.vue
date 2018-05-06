@@ -33,11 +33,8 @@
       <group v-show="isFriend" class="u-card">
         <cell title="备注名" is-link :link="remarkLink">{{userInfo._alias}}</cell>
       </group>
-      <group v-if='!isSelf' class="u-card">
-        <x-switch class="u-switch" title="黑名单" v-model="isBlack" @on-change="changeBlack"></x-switch>
-      </group>
       <div class="u-bottom">
-        <x-button type="primary" action-type="button" @click.native="enterChat">聊天</x-button>
+        <x-button v-show="isFriend" type="primary" action-type="button" @click.native="enterChat">聊天</x-button>
         <x-button v-show="isFriend" type="primary" action-type="button" @click.native="enterHistory">历史记录</x-button>
         <x-button v-show="isFriend" type="warn" action-type="button" @click.native="deleteFriend">删除好友</x-button>
         <x-button v-show="!isFriend && !isSelf" type="warn" action-type="button" @click.native="addFriend">添加好友</x-button>
@@ -57,24 +54,29 @@ export default {
     }
   },
   computed: {
-    account () {
+    uid () {
       return this.$route.params.userId
     },
     userInfo () {
       let info = {}
       if (this.isRobot) {
-        info = Object.assign({}, this.robotInfos[this.account])
+        info = Object.assign({}, this.robotInfos[this.uid])
         info.alias = info.nick || account
         info.avatar = info.originAvatar || item.avatar
-      } else if (this.account === this.$store.state.userUID) {
+      } else if (this.uid === this.$store.state.userUID) {
+          console.log("this.account", this.uid);
+
         info =  Object.assign({}, this.$store.state.myInfo)
         info.alias = info.nick
         this.isSelf = true
       } else {
-        info = Object.assign({}, this.$store.state.userInfos[this.account])
+
+        info = Object.assign({}, this.$store.state.userInfos[this.uid])
         info._alias = info.alias //服务器中存的别名，在备注栏展示
         info.alias = util.getFriendAlias(info)
         this.isBlack = info.isBlack
+
+          console.log("this.account1111", info);
       }
       return info
     },
@@ -87,37 +89,37 @@ export default {
       return userInfo.isFriend
     },
     isRobot () {
-      if (this.robotInfos[this.account]) {
+      if (this.robotInfos[this.uid]) {
         return true
       }
       return false
     },
     remarkLink () {
-      return `/namecardremark/${this.account}`
+      return `/namecardremark/${this.uid}`
     }
   },
   methods: {
     changeBlack () {
       this.$store.dispatch('updateBlack', {
-        account: this.account,
+        account: this.uid,
         isBlack: this.isBlack
       })
     },
     enterChat () {
-      location.href = `#/chat/p2p-${this.account}`
+      location.href = `#/chat/p2p-${this.uid}`
     },
     enterHistory () {
-      location.href = `#/chatHistory/p2p-${this.account}`
+      location.href = `#/chatHistory/p2p-${this.uid}`
     },
     addFriend () {
-      this.$store.dispatch('addFriend', this.account)
+      this.$store.dispatch('addFriend', this.uid)
     },
     deleteFriend () {
       let that = this
       this.$vux.confirm.show({
         title: '删除好友后，将同时解除双方的好友关系',
         onConfirm () {
-          that.$store.dispatch('deleteFriend', that.account)
+          that.$store.dispatch('deleteFriend', that.uid)
         }
       })
     }

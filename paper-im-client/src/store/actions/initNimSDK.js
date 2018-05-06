@@ -4,7 +4,8 @@
 
 import config from '@/configs'
 import {onMyInfo} from './userInfo'
-import {searchUserDone} from './search'
+import {onSearchUser} from './search'
+import {onUpdateFriend} from './friends'
 
 export function initNimSDK({state, commit, dispatch}, loginInfo) {
     dispatch('showLoading')
@@ -66,8 +67,12 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
 
                 // 搜索用户完成
                 if (cmd == 'getUsers') {
-                    console.log("msg", msg);
-                    searchUserDone(msg)
+                    onSearchUser(msg)
+                }
+
+                // 搜索用户完成
+                if (cmd == 'addFriend') {
+                    onUpdateFriend(msg)
                 }
             }
         },
@@ -79,6 +84,18 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
                 params: {
                     'from': loginInfo.uid,
                     'loginName': loginName
+                }
+            }
+            this.onsend(data)
+        },
+        // 添加好友
+        addFriend: function (friendUid) {
+            var data = {
+                service: 'user',
+                cmd: 'addFriend',
+                params: {
+                    'from': loginInfo.uid,
+                    'friendUid': friendUid
                 }
             }
             this.onsend(data)

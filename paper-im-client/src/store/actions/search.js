@@ -17,10 +17,10 @@ export function searchUsers({state, commit}, obj) {
     im.getUser(obj.loginName)
 }
 
-export function searchUserDone(obj) {
+export function onSearchUser(obj) {
     console.log("searchUserDone....", obj);
     let code = obj.code;
-    if(code == "60000") {
+    if (code == "60000") {
         store.commit('updateSearchlist', {
             type: 'user',
             list: []
@@ -28,7 +28,7 @@ export function searchUserDone(obj) {
         return false
     }
 
-    if(code != "20000") {
+    if (code != "20000") {
         return false
     }
     store.commit('updateSearchlist', {
@@ -40,25 +40,6 @@ export function searchUserDone(obj) {
     store.commit('updateUserInfo', updateUsers)
 
     return false
-    /*
-     let updateUsers = users.filter(item => {
-       let account = item.account
-       if (item.account === state.userUID) {
-         return false
-       }
-       let userInfo = state.userInfos[account] || {}
-       if (userInfo.isFriend) {
-         return false
-       }
-       return true
-     })
-     updateUsers = updateUsers.map(item => {
-       return formatUserInfo(item)
-     })
-     commit('updateUserInfo', updateUsers)
-     if (done instanceof Function) {
-       done(users)
-     }*/
 }
 
 export function searchTeam({state, commit}, obj) {

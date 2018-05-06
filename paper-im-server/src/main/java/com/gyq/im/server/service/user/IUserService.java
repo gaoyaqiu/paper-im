@@ -1,5 +1,6 @@
 package com.gyq.im.server.service.user;
 
+import com.gyq.im.common.exception.CommonInternalErrorException;
 import com.gyq.im.server.controller.user.User;
 
 /**
@@ -32,4 +33,22 @@ public interface IUserService {
      * @return
      */
     User getUser(String loginName);
+
+    /**
+     * 获取用户信息.
+     *
+     * @param loginName 登录名
+     * @param fromUid 操作用户
+     * @return
+     */
+    User getUser(String loginName, Long fromUid) throws CommonInternalErrorException;
+
+    /**
+     * 获取用户信息.
+     *
+     * @param uid 被查询的用户id
+     * @param fromUid 操作用户
+     * @return
+     */
+    User getUser(Long uid, Long fromUid) throws CommonInternalErrorException;
 }

@@ -9,6 +9,7 @@ import com.gyq.im.common.tools.utils.RandomUtil;
 import com.gyq.im.core.entity.GyqUser;
 import com.gyq.im.core.service.IGyqUserService;
 import com.gyq.im.server.controller.user.User;
+import com.gyq.im.server.service.friend.IFriendService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,9 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     private IGyqUserService userService;
+
+    @Autowired
+    private IFriendService friendService;
 
     @Override
     public Long save(User user) {
@@ -112,6 +116,32 @@ public class UserServiceImpl implements IUserService {
 
         BeanCopierUtils.copyProperties(gyqUser, user);
         user.setLoginName(gyqUser.getUserLoginName());
+
+        return user;
+    }
+
+    @Override
+    public User getUser(String loginName, Long fromUid) {
+        User user = getUser(loginName);
+
+        // 查询对方是否是自己好友
+        if (fromUid != null) {
+            boolean isFriend = friendService.isFriend(fromUid, user.getUserUid());
+            user.setIsFriend(isFriend);
+        }
+
+        return user;
+    }
+
+    @Override
+    public User getUser(Long userUid, Long fromUid) {
+        User user = getUser(userUid);
+
+        // 查询对方是否是自己好友
+        if (fromUid != null) {
+            boolean isFriend = friendService.isFriend(fromUid, user.getUserUid());
+            user.setIsFriend(isFriend);
+        }
 
         return user;
     }
