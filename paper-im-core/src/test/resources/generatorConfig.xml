@@ -50,7 +50,7 @@
         <javaClientGenerator targetPackage="com.gyq.im.core.mapper"
                              targetProject="${targetProject}/src/main/java" type="XMLMAPPER"/>
 
-        <table tableName="gyq_user" enableSelectByExample="false" enableDeleteByExample="false"
+        <table tableName="gyq_user_groups" enableSelectByExample="false" enableDeleteByExample="false"
                enableCountByExample="false" enableUpdateByExample="fasle">
         </table>
 

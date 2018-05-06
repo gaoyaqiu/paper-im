@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gyq.im.core.mapper.GyqFriendsMapper">
+  <resultMap id="BaseResultMap" type="com.gyq.im.core.entity.GyqFriends">
+    <id column="f_id" jdbcType="BIGINT" property="fId" />
+    <result column="f_uid" jdbcType="BIGINT" property="fUid" />
+    <result column="f_friend_uid" jdbcType="BIGINT" property="fFriendUid" />
+    <result column="f_status" jdbcType="INTEGER" property="fStatus" />
+    <result column="f_created" jdbcType="BIGINT" property="fCreated" />
+    <result column="f_updated" jdbcType="BIGINT" property="fUpdated" />
+    <result column="f_deleted" jdbcType="BIGINT" property="fDeleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    f_id, f_uid, f_friend_uid, f_status, f_created, f_updated, f_deleted
+  </sql>
+  <sql id="Example_Where_Clause">
+    <trim prefix="where" prefixOverrides="and|or">
+      <if test="params.fUid != null">
+         and f_uid = #{params.fUid,jdbcType=BIGINT}
+      </if>
+      <if test="params.fFriendUid != null">
+         and f_friend_uid = #{params.fFriendUid,jdbcType=BIGINT}
+      </if>
+      <if test="params.fStatus != null">
+        and <![CDATA[ f_status < #{params.fStatus,jdbcType=INTEGER} ]]>
+      </if>
+      <if test="params.fCreated != null">
+         and f_created = #{params.fCreated,jdbcType=BIGINT}
+      </if>
+      <if test="params.fUpdated != null">
+         and f_updated = #{params.fUpdated,jdbcType=BIGINT}
+      </if>
+      <if test="params.fDeleted != null">
+         and f_deleted = #{params.fDeleted,jdbcType=BIGINT}
+      </if>
+      <if test="params.fId != null">
+         and f_id = #{params.fId,jdbcType=BIGINT}
+      </if>
+      <if test="params.ids != null">
+         and f_id in 
+		<foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+      </if>
+    </trim>
+  </sql>
+  <select id="selectByParams" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from gyq_friends
+    <include refid="Example_Where_Clause" />
+  </select>
+  <select id="selectCountByParams" resultType="int">
+    select count(*) from gyq_friends
+    <include refid="Example_Where_Clause" />
+  </select>
+  <select id="selectListByParams" resultMap="BaseResultMap" resultType="list">
+    select
+    <include refid="Base_Column_List" />
+    from gyq_friends
+    <include refid="Example_Where_Clause" />
+    <if test="orderParam != null">
+      order by ${orderParam}
+    </if>
+    <include refid="common.Pagination_Limit" />
+  </select>
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into gyq_friends (f_id, 
+      f_uid, f_friend_uid, f_status, 
+      f_created, f_updated, f_deleted
+      )
+    values 
+	<foreach collection="list" item="obj" separator=",">
+	 (#{obj.fId,jdbcType=BIGINT}, 
+      #{obj.fUid,jdbcType=BIGINT}, #{obj.fFriendUid,jdbcType=BIGINT}, #{obj.fStatus,jdbcType=INTEGER}, 
+      #{obj.fCreated,jdbcType=BIGINT}, #{obj.fUpdated,jdbcType=BIGINT}, #{obj.fDeleted,jdbcType=BIGINT}
+      )
+	</foreach>
+  </insert>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from gyq_friends
+    where f_id = #{fId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from gyq_friends
+    where f_id = #{fId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.gyq.im.core.entity.GyqFriends">
+    insert into gyq_friends (f_id, f_uid, f_friend_uid, 
+      f_status, f_created, f_updated, 
+      f_deleted)
+    values (#{fId,jdbcType=BIGINT}, #{fUid,jdbcType=BIGINT}, #{fFriendUid,jdbcType=BIGINT}, 
+      #{fStatus,jdbcType=INTEGER}, #{fCreated,jdbcType=BIGINT}, #{fUpdated,jdbcType=BIGINT}, 
+      #{fDeleted,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.gyq.im.core.entity.GyqFriends">
+    insert into gyq_friends
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="fId != null">
+        f_id,
+      </if>
+      <if test="fUid != null">
+        f_uid,
+      </if>
+      <if test="fFriendUid != null">
+        f_friend_uid,
+      </if>
+      <if test="fStatus != null">
+        f_status,
+      </if>
+      <if test="fCreated != null">
+        f_created,
+      </if>
+      <if test="fUpdated != null">
+        f_updated,
+      </if>
+      <if test="fDeleted != null">
+        f_deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="fId != null">
+        #{fId,jdbcType=BIGINT},
+      </if>
+      <if test="fUid != null">
+        #{fUid,jdbcType=BIGINT},
+      </if>
+      <if test="fFriendUid != null">
+        #{fFriendUid,jdbcType=BIGINT},
+      </if>
+      <if test="fStatus != null">
+        #{fStatus,jdbcType=INTEGER},
+      </if>
+      <if test="fCreated != null">
+        #{fCreated,jdbcType=BIGINT},
+      </if>
+      <if test="fUpdated != null">
+        #{fUpdated,jdbcType=BIGINT},
+      </if>
+      <if test="fDeleted != null">
+        #{fDeleted,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gyq.im.core.entity.GyqFriends">
+    update gyq_friends
+    <set>
+      <if test="fUid != null">
+        f_uid = #{fUid,jdbcType=BIGINT},
+      </if>
+      <if test="fFriendUid != null">
+        f_friend_uid = #{fFriendUid,jdbcType=BIGINT},
+      </if>
+      <if test="fStatus != null">
+        f_status = #{fStatus,jdbcType=INTEGER},
+      </if>
+      <if test="fCreated != null">
+        f_created = #{fCreated,jdbcType=BIGINT},
+      </if>
+      <if test="fUpdated != null">
+        f_updated = #{fUpdated,jdbcType=BIGINT},
+      </if>
+      <if test="fDeleted != null">
+        f_deleted = #{fDeleted,jdbcType=BIGINT},
+      </if>
+    </set>
+    where f_id = #{fId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gyq.im.core.entity.GyqFriends">
+    update gyq_friends
+    set f_uid = #{fUid,jdbcType=BIGINT},
+      f_friend_uid = #{fFriendUid,jdbcType=BIGINT},
+      f_status = #{fStatus,jdbcType=INTEGER},
+      f_created = #{fCreated,jdbcType=BIGINT},
+      f_updated = #{fUpdated,jdbcType=BIGINT},
+      f_deleted = #{fDeleted,jdbcType=BIGINT}
+    where f_id = #{fId,jdbcType=BIGINT}
+  </update>
+</mapper>

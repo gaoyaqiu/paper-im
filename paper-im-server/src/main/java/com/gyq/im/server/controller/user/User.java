@@ -47,5 +47,8 @@ public class User implements Serializable {
 
     private Long userUpdated;
 
+    // 是否是好友
+    private Boolean isFriend;
+
     private static final long serialVersionUID = 1L;
 }

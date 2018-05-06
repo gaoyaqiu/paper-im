@@ -79,15 +79,12 @@
         watch: {
             searchResult(val, oldVal) {
                 console.log("searchResult....", val);
-                if(!val) {
-                    return false
-                }
-                if ((!val) && (!this.firstEntry)) {
+                if ((val.length === 0) && (!this.firstEntry)) {
                     this.errMsg = '无记录'
                 } else {
                     this.errMsg = ''
                 }
-                this.searchList = [val]
+                this.searchList = val
             },
             searchType() {
                 this.$refs.searchInput.$refs.input.focus()
@@ -95,7 +92,7 @@
         },
         computed: {
             searchResult() {
-                let result = {}
+                let result = []
                 if (this.searchType === 1) {
                    /* result = this.$store.state.searchedTeams.map(item => {
                         item.avatar = item.avatar || config.defaultUserIcon
@@ -103,16 +100,12 @@
                         return item
                     })*/
                 } else if (this.searchType === 0) {
-                    let item = this.$store.state.searchedUsers
-                    if(!item.account) {
-                        return false
-                    }
-
-                    result = {
-                        nick: item.userNickName,
-                        link: '/namecard/${item.userUid}',
-                        avatar: item.userFace || config.defaultUserIcon
-                    }
+                    result = this.$store.state.searchedUsers.map(item => {
+                        item.nick = item.userNickName
+                        item.link = `/namecard/${item.userUid}`
+                        item.avatar = item.userFace || config.defaultUserIcon
+                        return item
+                    })
                 }
                 return result
             }
@@ -138,7 +131,7 @@
                         this.errMsg = '别看了，就是你自己！'
                     } else {
                         this.$store.dispatch('searchUsers', {
-                            account: this.searchText
+                            loginName: this.searchText
                         })
                     }
                 }

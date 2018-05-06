@@ -5,6 +5,7 @@ import com.gyq.im.common.enums.ApiCodeDefined;
 import com.gyq.im.common.exception.CommonInternalErrorException;
 import com.gyq.im.common.tools.utils.JsonUtil;
 import com.gyq.im.server.controller.user.User;
+import com.gyq.im.server.service.friend.IFriendService;
 import com.gyq.im.server.service.user.IUserService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,30 +25,30 @@ import static com.google.common.collect.Maps.newHashMap;
  * @date 2018/3/14
  */
 @Slf4j
-@ServerEndpoint("/server/{userLoginName}")
+@ServerEndpoint("/server/{uid}")
 public class WebSocketHandler {
 
     /**
      * 保存websocket session
      * key->userLoginName
      */
-    private static final Map<String, Session> WS_SESSION = new ConcurrentHashMap<>();
+    private static final Map<Long, Session> WS_SESSION = new ConcurrentHashMap<>();
 
     /**
      * 存储sessionId和用户映射关系.
      * key->sessionId
-     * value->userLoginName
+     * value->uid
      */
-    private static final Map<String, String> USER_SESSION = new ConcurrentHashMap<>();
+    private static final Map<String, Long> USER_SESSION = new ConcurrentHashMap<>();
 
     private final Object lock = new Object();
 
     @OnOpen
-    public void onOpen(@PathParam("userLoginName") String userLoginName, Session session) throws IOException {
+    public void onOpen(@PathParam("uid") Long uid, Session session) throws IOException {
         log.debug("ChatWebSocketHandler onOpen");
-        registerSession(session, userLoginName);
+        registerSession(session, uid);
 
-        log.debug("userLoginName[{}] 已连接, sessionId[{}], 当前用户数为:[{}]", userLoginName, session.getId(), WS_SESSION.size());
+        log.debug("userLoginName[{}] 已连接, sessionId[{}], 当前用户数为:[{}]", uid, session.getId(), WS_SESSION.size());
     }
 
     @OnClose
@@ -58,7 +59,6 @@ public class WebSocketHandler {
 
     @OnMessage
     public void onMessage(String message, Session session) throws IOException {
-        IUserService userService = (IUserService) SpringContextUtil.getBean("userServiceImpl");
         log.debug("接收到客户端消息---内容为[{}]", message);
         Map<String, Object> resMap = newHashMap();
         Map<String, Object> map = JsonUtil.json2Map(null, message);
@@ -71,7 +71,8 @@ public class WebSocketHandler {
         // friend 好友请求、同步好友请求、删除好友、同步删除好友、更新好友、同步更新好友、获取好友、同步好友信息
         String service = map.get("service").toString();
         String cmd = map.get("cmd").toString();
-        String to, from, msg;
+        Long to, from;
+        String msg;
 
         //  用户消息
         if ("user".equals(service)) {
@@ -80,22 +81,20 @@ public class WebSocketHandler {
             resMap.put("cmd", cmd);
 
             if ("syncMyInfo".equals(cmd)) {
-                from = params.get("from").toString();
+                from = Long.valueOf(params.get("from").toString());
 
-                msg = getUsers(userService, resMap, from);
+                msg = getUser(resMap, from);
                 sendMessageTo(msg, from);
                 log.debug("向[{}]发送[{}]消息---内容为[{}]", from, cmd, msg);
             }
 
             if ("getUsers".equals(cmd)) {
-                from = params.get("from").toString();
+                from = Long.valueOf(params.get("from").toString());
                 String loginName = params.get("loginName").toString();
-
-                msg = getUsers(userService, resMap, loginName);
+                msg = getUser(resMap, loginName, from);
                 sendMessageTo(msg, from);
                 log.debug("向[{}]发送[{}]消息---内容为[{}]", from, cmd, msg);
             }
-
         } else if ("".equals(service)) {
 
         }
@@ -118,9 +117,17 @@ public class WebSocketHandler {
         }*/
     }
 
-    private String getUsers(IUserService userService, Map<String, Object> resMap, String loginName) {
+    private String getUser(Map<String, Object> resMap, String loginName, Long currendUid) {
+        IUserService userService = (IUserService) SpringContextUtil.getBean("userServiceImpl");
+        IFriendService friendService = (IFriendService) SpringContextUtil.getBean("friendServiceImpl");
         try {
             User user = userService.getUser(loginName);
+            // 查询对方是否是自己好友
+            if (currendUid != null) {
+                boolean isFriend = friendService.isFriend(currendUid, user.getUserUid());
+                user.setIsFriend(isFriend);
+            }
+
             resMap.put("code", ApiCodeDefined.SUCCESS.getValue());
             resMap.put("response", user);
         } catch (CommonInternalErrorException e) {
@@ -130,6 +137,39 @@ public class WebSocketHandler {
 
         String msg = JsonUtil.object2Json(resMap);
         return msg;
+    }
+
+    private String getUser(Map<String, Object> resMap, Long uid, Long currendUid) {
+        IUserService userService = (IUserService) SpringContextUtil.getBean("userServiceImpl");
+        IFriendService friendService = (IFriendService) SpringContextUtil.getBean("friendServiceImpl");
+        try {
+            User user = userService.getUser(uid);
+            // 查询对方是否是自己好友
+            if (currendUid != null) {
+                boolean isFriend = friendService.isFriend(currendUid, uid);
+                user.setIsFriend(isFriend);
+            }
+
+            resMap.put("code", ApiCodeDefined.SUCCESS.getValue());
+            resMap.put("response", user);
+        } catch (CommonInternalErrorException e) {
+            resMap.put("code", e.getCode());
+            resMap.put("response", e.getMessage());
+        }
+
+        String msg = JsonUtil.object2Json(resMap);
+        return msg;
+    }
+
+    /**
+     * 获取用户信息，不验证是否是自己好友.
+     *
+     * @param resMap
+     * @param uid
+     * @return
+     */
+    private String getUser(Map<String, Object> resMap, Long uid) {
+        return getUser(resMap, uid, null);
     }
 
     @OnError
@@ -143,7 +183,7 @@ public class WebSocketHandler {
      * @param message
      * @param to
      */
-    public void sendMessageTo(String message, String to) {
+    public void sendMessageTo(String message, Long to) {
         if (WS_SESSION.size() > 0 && null != WS_SESSION.get(to)) {
             Session session = WS_SESSION.get(to);
             session.getAsyncRemote().sendText(message);
@@ -168,14 +208,14 @@ public class WebSocketHandler {
      * 注册用户.
      *
      * @param session
-     * @param userLoginName
+     * @param uid
      */
-    private void registerSession(Session session, String userLoginName) {
+    private void registerSession(Session session, Long uid) {
         Object obj1 = this.lock;
         synchronized (this.lock) {
-            WS_SESSION.put(userLoginName, session);
+            WS_SESSION.put(uid, session);
 
-            USER_SESSION.put(session.getId(), userLoginName);
+            USER_SESSION.put(session.getId(), uid);
         }
     }
 
@@ -187,9 +227,9 @@ public class WebSocketHandler {
     private void runregisterSession(Session session) {
         Object obj1 = this.lock;
         synchronized (this.lock) {
-            String userLoginName = USER_SESSION.get(session.getId());
+            Long uid = USER_SESSION.get(session.getId());
             USER_SESSION.remove(session.getId());
-            WS_SESSION.remove(userLoginName);
+            WS_SESSION.remove(uid);
         }
     }
 

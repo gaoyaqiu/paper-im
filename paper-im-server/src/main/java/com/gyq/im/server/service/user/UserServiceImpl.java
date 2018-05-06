@@ -85,6 +85,7 @@ public class UserServiceImpl implements IUserService {
         }
 
         BeanCopierUtils.copyProperties(gyqUser, user);
+        user.setLoginName(gyqUser.getUserLoginName());
 
         return user;
     }
@@ -114,4 +115,5 @@ public class UserServiceImpl implements IUserService {
 
         return user;
     }
+
 }

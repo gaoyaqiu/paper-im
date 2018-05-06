@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gyq.im.core.mapper.GyqMessageMapper">
+  <resultMap id="BaseResultMap" type="com.gyq.im.core.entity.GyqMessage">
+    <id column="msg_id" jdbcType="BIGINT" property="msgId" />
+    <result column="from_id" jdbcType="BIGINT" property="fromId" />
+    <result column="to_id" jdbcType="BIGINT" property="toId" />
+    <result column="msg_content" jdbcType="VARCHAR" property="msgContent" />
+    <result column="msg_biz_status" jdbcType="INTEGER" property="msgBizStatus" />
+    <result column="msg_status" jdbcType="INTEGER" property="msgStatus" />
+    <result column="msg_created" jdbcType="BIGINT" property="msgCreated" />
+    <result column="msg_updated" jdbcType="BIGINT" property="msgUpdated" />
+    <result column="msg_deleted" jdbcType="BIGINT" property="msgDeleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    msg_id, from_id, to_id, msg_content, msg_biz_status, msg_status, msg_created, msg_updated, 
+    msg_deleted
+  </sql>
+  <sql id="Example_Where_Clause">
+    <trim prefix="where" prefixOverrides="and|or">
+      <if test="params.fromId != null">
+         and from_id = #{params.fromId,jdbcType=BIGINT}
+      </if>
+      <if test="params.toId != null">
+         and to_id = #{params.toId,jdbcType=BIGINT}
+      </if>
+      <if test="params.msgContent != null">
+         and msg_content = #{params.msgContent,jdbcType=VARCHAR}
+      </if>
+      <if test="params.msgBizStatus != null">
+         and msg_biz_status = #{params.msgBizStatus,jdbcType=INTEGER}
+      </if>
+      <if test="params.msgStatus != null">
+        and <![CDATA[ msg_status < #{params.msgStatus,jdbcType=INTEGER} ]]>
+      </if>
+      <if test="params.msgCreated != null">
+         and msg_created = #{params.msgCreated,jdbcType=BIGINT}
+      </if>
+      <if test="params.msgUpdated != null">
+         and msg_updated = #{params.msgUpdated,jdbcType=BIGINT}
+      </if>
+      <if test="params.msgDeleted != null">
+         and msg_deleted = #{params.msgDeleted,jdbcType=BIGINT}
+      </if>
+      <if test="params.msgId != null">
+         and msg_id = #{params.msgId,jdbcType=BIGINT}
+      </if>
+      <if test="params.ids != null">
+         and msg_id in 
+		<foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+      </if>
+    </trim>
+  </sql>
+  <select id="selectByParams" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from gyq_message
+    <include refid="Example_Where_Clause" />
+  </select>
+  <select id="selectCountByParams" resultType="int">
+    select count(*) from gyq_message
+    <include refid="Example_Where_Clause" />
+  </select>
+  <select id="selectListByParams" resultMap="BaseResultMap" resultType="list">
+    select
+    <include refid="Base_Column_List" />
+    from gyq_message
+    <include refid="Example_Where_Clause" />
+    <if test="orderParam != null">
+      order by ${orderParam}
+    </if>
+    <include refid="common.Pagination_Limit" />
+  </select>
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into gyq_message (msg_id, 
+      from_id, to_id, msg_content, 
+      msg_biz_status, msg_status, msg_created, 
+      msg_updated, msg_deleted)
+    values 
+	<foreach collection="list" item="obj" separator=",">
+	 (#{obj.msgId,jdbcType=BIGINT}, 
+      #{obj.fromId,jdbcType=BIGINT}, #{obj.toId,jdbcType=BIGINT}, #{obj.msgContent,jdbcType=VARCHAR}, 
+      #{obj.msgBizStatus,jdbcType=INTEGER}, #{obj.msgStatus,jdbcType=INTEGER}, #{obj.msgCreated,jdbcType=BIGINT}, 
+      #{obj.msgUpdated,jdbcType=BIGINT}, #{obj.msgDeleted,jdbcType=BIGINT})
+	</foreach>
+  </insert>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from gyq_message
+    where msg_id = #{msgId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from gyq_message
+    where msg_id = #{msgId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.gyq.im.core.entity.GyqMessage">
+    insert into gyq_message (msg_id, from_id, to_id, 
+      msg_content, msg_biz_status, msg_status, 
+      msg_created, msg_updated, msg_deleted
+      )
+    values (#{msgId,jdbcType=BIGINT}, #{fromId,jdbcType=BIGINT}, #{toId,jdbcType=BIGINT}, 
+      #{msgContent,jdbcType=VARCHAR}, #{msgBizStatus,jdbcType=INTEGER}, #{msgStatus,jdbcType=INTEGER}, 
+      #{msgCreated,jdbcType=BIGINT}, #{msgUpdated,jdbcType=BIGINT}, #{msgDeleted,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.gyq.im.core.entity.GyqMessage">
+    insert into gyq_message
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="msgId != null">
+        msg_id,
+      </if>
+      <if test="fromId != null">
+        from_id,
+      </if>
+      <if test="toId != null">
+        to_id,
+      </if>
+      <if test="msgContent != null">
+        msg_content,
+      </if>
+      <if test="msgBizStatus != null">
+        msg_biz_status,
+      </if>
+      <if test="msgStatus != null">
+        msg_status,
+      </if>
+      <if test="msgCreated != null">
+        msg_created,
+      </if>
+      <if test="msgUpdated != null">
+        msg_updated,
+      </if>
+      <if test="msgDeleted != null">
+        msg_deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="msgId != null">
+        #{msgId,jdbcType=BIGINT},
+      </if>
+      <if test="fromId != null">
+        #{fromId,jdbcType=BIGINT},
+      </if>
+      <if test="toId != null">
+        #{toId,jdbcType=BIGINT},
+      </if>
+      <if test="msgContent != null">
+        #{msgContent,jdbcType=VARCHAR},
+      </if>
+      <if test="msgBizStatus != null">
+        #{msgBizStatus,jdbcType=INTEGER},
+      </if>
+      <if test="msgStatus != null">
+        #{msgStatus,jdbcType=INTEGER},
+      </if>
+      <if test="msgCreated != null">
+        #{msgCreated,jdbcType=BIGINT},
+      </if>
+      <if test="msgUpdated != null">
+        #{msgUpdated,jdbcType=BIGINT},
+      </if>
+      <if test="msgDeleted != null">
+        #{msgDeleted,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gyq.im.core.entity.GyqMessage">
+    update gyq_message
+    <set>
+      <if test="fromId != null">
+        from_id = #{fromId,jdbcType=BIGINT},
+      </if>
+      <if test="toId != null">
+        to_id = #{toId,jdbcType=BIGINT},
+      </if>
+      <if test="msgContent != null">
+        msg_content = #{msgContent,jdbcType=VARCHAR},
+      </if>
+      <if test="msgBizStatus != null">
+        msg_biz_status = #{msgBizStatus,jdbcType=INTEGER},
+      </if>
+      <if test="msgStatus != null">
+        msg_status = #{msgStatus,jdbcType=INTEGER},
+      </if>
+      <if test="msgCreated != null">
+        msg_created = #{msgCreated,jdbcType=BIGINT},
+      </if>
+      <if test="msgUpdated != null">
+        msg_updated = #{msgUpdated,jdbcType=BIGINT},
+      </if>
+      <if test="msgDeleted != null">
+        msg_deleted = #{msgDeleted,jdbcType=BIGINT},
+      </if>
+    </set>
+    where msg_id = #{msgId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gyq.im.core.entity.GyqMessage">
+    update gyq_message
+    set from_id = #{fromId,jdbcType=BIGINT},
+      to_id = #{toId,jdbcType=BIGINT},
+      msg_content = #{msgContent,jdbcType=VARCHAR},
+      msg_biz_status = #{msgBizStatus,jdbcType=INTEGER},
+      msg_status = #{msgStatus,jdbcType=INTEGER},
+      msg_created = #{msgCreated,jdbcType=BIGINT},
+      msg_updated = #{msgUpdated,jdbcType=BIGINT},
+      msg_deleted = #{msgDeleted,jdbcType=BIGINT}
+    where msg_id = #{msgId,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -25,13 +25,11 @@ public interface IUserService {
      */
     User getUser(long userUid);
 
-
     /**
-     * 查询用户信息.
+     * 根据登录名称查询用户信息.
      *
      * @param loginName
      * @return
      */
     User getUser(String loginName);
-
 }

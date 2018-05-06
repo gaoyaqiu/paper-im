@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gyq.im.core.mapper.GyqGroupsMapper">
+  <resultMap id="BaseResultMap" type="com.gyq.im.core.entity.GyqGroups">
+    <id column="g_id" jdbcType="BIGINT" property="gId" />
+    <result column="g_number" jdbcType="BIGINT" property="gNumber" />
+    <result column="g_name" jdbcType="VARCHAR" property="gName" />
+    <result column="g_info" jdbcType="VARCHAR" property="gInfo" />
+    <result column="g_status" jdbcType="INTEGER" property="gStatus" />
+    <result column="g_created" jdbcType="BIGINT" property="gCreated" />
+    <result column="g_updated" jdbcType="BIGINT" property="gUpdated" />
+    <result column="g_deleted" jdbcType="BIGINT" property="gDeleted" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    g_id, g_number, g_name, g_info, g_status, g_created, g_updated, g_deleted
+  </sql>
+  <sql id="Example_Where_Clause">
+    <trim prefix="where" prefixOverrides="and|or">
+      <if test="params.gNumber != null">
+         and g_number = #{params.gNumber,jdbcType=BIGINT}
+      </if>
+      <if test="params.gName != null">
+         and g_name = #{params.gName,jdbcType=VARCHAR}
+      </if>
+      <if test="params.gInfo != null">
+         and g_info = #{params.gInfo,jdbcType=VARCHAR}
+      </if>
+      <if test="params.gStatus != null">
+        and <![CDATA[ g_status < #{params.gStatus,jdbcType=INTEGER} ]]>
+      </if>
+      <if test="params.gCreated != null">
+         and g_created = #{params.gCreated,jdbcType=BIGINT}
+      </if>
+      <if test="params.gUpdated != null">
+         and g_updated = #{params.gUpdated,jdbcType=BIGINT}
+      </if>
+      <if test="params.gDeleted != null">
+         and g_deleted = #{params.gDeleted,jdbcType=BIGINT}
+      </if>
+      <if test="params.gId != null">
+         and g_id = #{params.gId,jdbcType=BIGINT}
+      </if>
+      <if test="params.ids != null">
+         and g_id in 
+		<foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+      </if>
+    </trim>
+  </sql>
+  <select id="selectByParams" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from gyq_groups
+    <include refid="Example_Where_Clause" />
+  </select>
+  <select id="selectCountByParams" resultType="int">
+    select count(*) from gyq_groups
+    <include refid="Example_Where_Clause" />
+  </select>
+  <select id="selectListByParams" resultMap="BaseResultMap" resultType="list">
+    select
+    <include refid="Base_Column_List" />
+    from gyq_groups
+    <include refid="Example_Where_Clause" />
+    <if test="orderParam != null">
+      order by ${orderParam}
+    </if>
+    <include refid="common.Pagination_Limit" />
+  </select>
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into gyq_groups (g_id, 
+      g_number, g_name, g_info, 
+      g_status, g_created, g_updated, 
+      g_deleted)
+    values 
+	<foreach collection="list" item="obj" separator=",">
+	 (#{obj.gId,jdbcType=BIGINT}, 
+      #{obj.gNumber,jdbcType=BIGINT}, #{obj.gName,jdbcType=VARCHAR}, #{obj.gInfo,jdbcType=VARCHAR}, 
+      #{obj.gStatus,jdbcType=INTEGER}, #{obj.gCreated,jdbcType=BIGINT}, #{obj.gUpdated,jdbcType=BIGINT}, 
+      #{obj.gDeleted,jdbcType=BIGINT})
+	</foreach>
+  </insert>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from gyq_groups
+    where g_id = #{gId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from gyq_groups
+    where g_id = #{gId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.gyq.im.core.entity.GyqGroups">
+    insert into gyq_groups (g_id, g_number, g_name, 
+      g_info, g_status, g_created, 
+      g_updated, g_deleted)
+    values (#{gId,jdbcType=BIGINT}, #{gNumber,jdbcType=BIGINT}, #{gName,jdbcType=VARCHAR}, 
+      #{gInfo,jdbcType=VARCHAR}, #{gStatus,jdbcType=INTEGER}, #{gCreated,jdbcType=BIGINT}, 
+      #{gUpdated,jdbcType=BIGINT}, #{gDeleted,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.gyq.im.core.entity.GyqGroups">
+    insert into gyq_groups
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="gId != null">
+        g_id,
+      </if>
+      <if test="gNumber != null">
+        g_number,
+      </if>
+      <if test="gName != null">
+        g_name,
+      </if>
+      <if test="gInfo != null">
+        g_info,
+      </if>
+      <if test="gStatus != null">
+        g_status,
+      </if>
+      <if test="gCreated != null">
+        g_created,
+      </if>
+      <if test="gUpdated != null">
+        g_updated,
+      </if>
+      <if test="gDeleted != null">
+        g_deleted,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="gId != null">
+        #{gId,jdbcType=BIGINT},
+      </if>
+      <if test="gNumber != null">
+        #{gNumber,jdbcType=BIGINT},
+      </if>
+      <if test="gName != null">
+        #{gName,jdbcType=VARCHAR},
+      </if>
+      <if test="gInfo != null">
+        #{gInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="gStatus != null">
+        #{gStatus,jdbcType=INTEGER},
+      </if>
+      <if test="gCreated != null">
+        #{gCreated,jdbcType=BIGINT},
+      </if>
+      <if test="gUpdated != null">
+        #{gUpdated,jdbcType=BIGINT},
+      </if>
+      <if test="gDeleted != null">
+        #{gDeleted,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.gyq.im.core.entity.GyqGroups">
+    update gyq_groups
+    <set>
+      <if test="gNumber != null">
+        g_number = #{gNumber,jdbcType=BIGINT},
+      </if>
+      <if test="gName != null">
+        g_name = #{gName,jdbcType=VARCHAR},
+      </if>
+      <if test="gInfo != null">
+        g_info = #{gInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="gStatus != null">
+        g_status = #{gStatus,jdbcType=INTEGER},
+      </if>
+      <if test="gCreated != null">
+        g_created = #{gCreated,jdbcType=BIGINT},
+      </if>
+      <if test="gUpdated != null">
+        g_updated = #{gUpdated,jdbcType=BIGINT},
+      </if>
+      <if test="gDeleted != null">
+        g_deleted = #{gDeleted,jdbcType=BIGINT},
+      </if>
+    </set>
+    where g_id = #{gId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.gyq.im.core.entity.GyqGroups">
+    update gyq_groups
+    set g_number = #{gNumber,jdbcType=BIGINT},
+      g_name = #{gName,jdbcType=VARCHAR},
+      g_info = #{gInfo,jdbcType=VARCHAR},
+      g_status = #{gStatus,jdbcType=INTEGER},
+      g_created = #{gCreated,jdbcType=BIGINT},
+      g_updated = #{gUpdated,jdbcType=BIGINT},
+      g_deleted = #{gDeleted,jdbcType=BIGINT}
+    where g_id = #{gId,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -97,7 +97,7 @@ export default {
         const type = obj.type
         switch (type) {
             case 'user':
-                if (obj.list.length !== 0 || state.searchedUsers.length !== 0) {
+                if (obj.list.length !== 0) {
                     state.searchedUsers = obj.list
                 } else {
                     state.searchedUsers = []

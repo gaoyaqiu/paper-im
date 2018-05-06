@@ -1,10 +1,14 @@
 package com.gyq.im.server.security.jwt;
 
+import java.math.BigInteger;
+
 /**
  * @au
  */
 public final class JwtToken {
     private final String token;
+
+    private String uid;
 
     private JwtToken(String token) {
         this.token = token;
@@ -36,5 +40,13 @@ public final class JwtToken {
     @Override
     public int hashCode() {
         return token != null ? token.hashCode() : 0;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

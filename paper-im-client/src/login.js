@@ -40,9 +40,10 @@ var formData = new Vue({
                 passWord: this.password
             }
 
-            doLogin(data).then(token => {
+            doLogin(data).then((response) => {
+                let token = response.data.data.token;
                 // 服务端帐号均为小写
-                cookie.setCookie('uid', this.account.toLowerCase())
+                cookie.setCookie('uid', response.data.data.uid)
                 cookie.setCookie('sdktoken', token)
 
                 request.defaults.headers.common.Authorization = 'Bearer ' + token
@@ -66,9 +67,7 @@ var formData = new Vue({
 var doLogin = function (data) {
     return new Promise(((resolve, reject) => {
         request.post('/b/user/login', data).then((response) => {
-            let token = response.data.data.token;
-            request.defaults.headers.common.Authorization = token;
-            resolve(token);
+            resolve(response);
         }).catch(reject);
     }));
 }

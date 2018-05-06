@@ -72,13 +72,13 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
             }
         },
         // 搜索用户(精确搜索)
-        getUser: function (account) {
+        getUser: function (loginName) {
             var data = {
                 service: 'user',
                 cmd: 'getUsers',
                 params: {
                     'from': loginInfo.uid,
-                    'loginName': account
+                    'loginName': loginName
                 }
             }
             this.onsend(data)

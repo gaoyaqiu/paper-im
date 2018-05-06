@@ -14,25 +14,32 @@ export function resetSearchResult({state, commit}) {
 
 export function searchUsers({state, commit}, obj) {
     const im = state.im
-    im.getUser(obj.account)
+    im.getUser(obj.loginName)
 }
 
 export function searchUserDone(obj) {
     console.log("searchUserDone....", obj);
     let code = obj.code;
-    if(code != 20000) {
-        console.error("searchUserDone", obj.response)
-        return
+    if(code == "60000") {
+        store.commit('updateSearchlist', {
+            type: 'user',
+            list: []
+        })
+        return false
     }
 
+    if(code != "20000") {
+        return false
+    }
     store.commit('updateSearchlist', {
         type: 'user',
-        list: obj.response
+        list: [obj.response]
     })
 
     let updateUsers = formatUserInfo(obj.response)
     store.commit('updateUserInfo', updateUsers)
 
+    return false
     /*
      let updateUsers = users.filter(item => {
        let account = item.account

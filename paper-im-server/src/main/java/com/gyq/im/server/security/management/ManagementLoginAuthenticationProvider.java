@@ -81,6 +81,8 @@ public class ManagementLoginAuthenticationProvider implements AuthenticationProv
         }
 
         JwtToken jwtToken = jwtService.generateJwtToken(of(ADMIN_USER, ADMIN));
+        // 防止js 精度丢失
+        jwtToken.setUid(gyqUser.getUserUid().toString());
         return new JwtAuthenticationToken(null, jwtToken, null);
     }
 
