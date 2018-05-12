@@ -7,6 +7,7 @@ import util from '../../utils'
 import config from '../../configs'
 import Vue from 'Vue'
 
+
 export default {
     updateRefreshState(state) {
         state.isRefresh = false
@@ -38,21 +39,62 @@ export default {
         state.myInfo = util.mergeObject(state.myInfo, myInfo)
         console.log("state.myInfo", state.myInfo);
     },
-    updateUserInfo(state, user) {
-        let userInfos = state.userInfos
-        let userUid = user.userUid
-        if (userUid) {
-            userInfos[userUid] = util.mergeObject(userInfos[userUid], user)
+    updateUserInfo(state, user, friendsId = undefined) {
+        console.log("-----userInfos", user);
+        console.log("-----friendsId", friendsId);
+
+        if(user != undefined) {
+            let userInfos = state.userInfos
+            let userUid = user.userUid
+            if (userUid) {
+                userInfos[userUid] = util.mergeObject(userInfos[userUid], user)
+            }
+
+            state.userInfos = util.mergeObject(state.userInfos, userInfos)
+
+            return
         }
 
-        console.log("userInfos", userInfos)
-        state.userInfos = util.mergeObject(state.userInfos, userInfos)
+   /*     for(var key in state.userInfos) {
+            console.log("friendsId" + friendsId + ",,," + key);
+            if(key == friendsId) {
+                console.log("sss");
+                state.userInfos[key].isFriend = false;
+            }
+        }
+
+        console.log("-----userInfos", state.userInfos);*/
     },
-    updateFriends(state, friends, cutFriends = []) {
-        const nim = state.nim
-        state.friendslist = nim.mergeFriends(state.friendslist, friends)
-        // state.friendslist = nim.cutFriends(state.friendslist, cutFriends)
-        state.friendslist = nim.cutFriends(state.friendslist, friends.invalid)
+    updateFriends(state, friends, friendsId) {
+        if (friends != undefined) {
+            let isExist = false
+            state.friendslist.map(item => {
+                if (item.uid == friends) {
+                    isExist = true
+                }
+            })
+
+            if (!isExist) {
+                state.friendslist = util.mergeObjArray(state.friendslist, friends)
+            }
+
+            return
+        }
+
+        // 移除好友
+        let index = -1
+        for (var i = 0; i < state.friendslist.length; i++) {
+            if (state.friendslist[i].uid == friendsId) {
+                index = i
+                break;
+            }
+        }
+        if (index > -1) {
+            state.friendslist.splice(index, 1);
+        }
+
+        console.log("state.friendslist", state.friendslist);
+
     },
     updateRobots(state, robots) {
         const nim = state.nim

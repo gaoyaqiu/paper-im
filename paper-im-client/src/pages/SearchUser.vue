@@ -78,7 +78,6 @@
         },
         watch: {
             searchResult(val, oldVal) {
-                console.log("searchResult....", val);
                 if ((val.length === 0) && (!this.firstEntry)) {
                     this.errMsg = '无记录'
                 } else {

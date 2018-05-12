@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User implements Serializable {
-    private Long userUid;
+    private String userUid;
 
     @NotEmpty(message = ValidateMessage.NotEmpty, groups = {ValidGroup.Add.class})
     @Length(message = ValidateMessage.Length, min = 4, max = 20, groups = {ValidGroup.Add.class})
@@ -48,7 +48,7 @@ public class User implements Serializable {
     private Long userUpdated;
 
     // 是否是好友
-    private Boolean isFriend;
+    private Boolean isFriend = false;
 
     private static final long serialVersionUID = 1L;
 }

@@ -73,11 +73,11 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User getUser(long userUid) {
+    public User getUserById(String userUid) {
         User user = new User();
         GyqUser gyqUser;
         try {
-            gyqUser = userService.findObjByKey(userUid);
+            gyqUser = userService.findObjByKey(Long.valueOf(userUid));
         } catch (Exception e) {
             log.error("查询用户异常", e);
             throw new CommonInternalErrorException(ApiCodeDefined.ERROR);
@@ -90,6 +90,7 @@ public class UserServiceImpl implements IUserService {
 
         BeanCopierUtils.copyProperties(gyqUser, user);
         user.setLoginName(gyqUser.getUserLoginName());
+        user.setUserUid(gyqUser.getUserUid().toString());
 
         return user;
     }
@@ -116,12 +117,13 @@ public class UserServiceImpl implements IUserService {
 
         BeanCopierUtils.copyProperties(gyqUser, user);
         user.setLoginName(gyqUser.getUserLoginName());
+        user.setUserUid(gyqUser.getUserUid().toString());
 
         return user;
     }
 
     @Override
-    public User getUser(String loginName, Long fromUid) {
+    public User getUser(String loginName, String fromUid) {
         User user = getUser(loginName);
 
         // 查询对方是否是自己好友
@@ -134,8 +136,8 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User getUser(Long userUid, Long fromUid) {
-        User user = getUser(userUid);
+    public User getUserById(String userUid, String fromUid) {
+        User user = getUserById(userUid);
 
         // 查询对方是否是自己好友
         if (fromUid != null) {

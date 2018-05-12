@@ -30,9 +30,6 @@
         <cell title="邮箱">{{userInfo.email}}</cell>
         <cell title="签名">{{userInfo.sign}}</cell>
       </group>
-      <group v-show="isFriend" class="u-card">
-        <cell title="备注名" is-link :link="remarkLink">{{userInfo._alias}}</cell>
-      </group>
       <div class="u-bottom">
         <x-button v-show="isFriend" type="primary" action-type="button" @click.native="enterChat">聊天</x-button>
         <x-button v-show="isFriend" type="primary" action-type="button" @click.native="enterHistory">历史记录</x-button>
@@ -72,11 +69,7 @@ export default {
       } else {
 
         info = Object.assign({}, this.$store.state.userInfos[this.uid])
-        info._alias = info.alias //服务器中存的别名，在备注栏展示
-        info.alias = util.getFriendAlias(info)
         this.isBlack = info.isBlack
-
-          console.log("this.account1111", info);
       }
       return info
     },

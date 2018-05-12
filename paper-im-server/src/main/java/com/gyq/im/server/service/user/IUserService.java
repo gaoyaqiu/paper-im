@@ -24,7 +24,7 @@ public interface IUserService {
      * @param userUid
      * @return
      */
-    User getUser(long userUid);
+    User getUserById(String userUid);
 
     /**
      * 根据登录名称查询用户信息.
@@ -38,17 +38,17 @@ public interface IUserService {
      * 获取用户信息.
      *
      * @param loginName 登录名
-     * @param fromUid 操作用户
+     * @param fromUid   操作用户
      * @return
      */
-    User getUser(String loginName, Long fromUid) throws CommonInternalErrorException;
+    User getUser(String loginName, String fromUid) throws CommonInternalErrorException;
 
     /**
      * 获取用户信息.
      *
-     * @param uid 被查询的用户id
+     * @param uid     被查询的用户id
      * @param fromUid 操作用户
      * @return
      */
-    User getUser(Long uid, Long fromUid) throws CommonInternalErrorException;
+    User getUserById(String uid, String fromUid) throws CommonInternalErrorException;
 }

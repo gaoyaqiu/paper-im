@@ -5,7 +5,8 @@
 import config from '@/configs'
 import {onMyInfo} from './userInfo'
 import {onSearchUser} from './search'
-import {onUpdateFriend} from './friends'
+import {onUpdateFriend, onDeleteFriend} from './friends'
+import util from '../../utils'
 
 export function initNimSDK({state, commit, dispatch}, loginInfo) {
     dispatch('showLoading')
@@ -47,13 +48,13 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
             this.onsend(data)
         },
         onsend: function (data) {
-            // console.log("onsend--->", data)
             this.ws.send(JSON.stringify(data));
         },
         onmyinfo: function () {
 
 
         },
+        // 消息处理
         onmsg: function (response) {
             let msg = JSON.parse(response);
             let cmd = msg.cmd;
@@ -70,9 +71,14 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
                     onSearchUser(msg)
                 }
 
-                // 搜索用户完成
+                // 添加好友回调
                 if (cmd == 'addFriend') {
                     onUpdateFriend(msg)
+                }
+
+                // 删除回调
+                if (cmd == 'deleteFriend') {
+                    onDeleteFriend(msg)
                 }
             }
         },
@@ -93,6 +99,17 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
             var data = {
                 service: 'user',
                 cmd: 'addFriend',
+                params: {
+                    'from': loginInfo.uid,
+                    'friendUid': friendUid
+                }
+            }
+            this.onsend(data)
+        },
+        deleteFriend: function (friendUid) {
+            var data = {
+                service: 'user',
+                cmd: 'deleteFriend',
                 params: {
                     'from': loginInfo.uid,
                     'friendUid': friendUid

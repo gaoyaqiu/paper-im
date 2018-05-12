@@ -13,6 +13,7 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,19 +33,19 @@ public class WebSocketHandler {
      * 保存websocket session
      * key->userLoginName
      */
-    private static final Map<Long, Session> WS_SESSION = new ConcurrentHashMap<>();
+    private static final Map<String, Session> WS_SESSION = new ConcurrentHashMap<>();
 
     /**
      * 存储sessionId和用户映射关系.
      * key->sessionId
      * value->uid
      */
-    private static final Map<String, Long> USER_SESSION = new ConcurrentHashMap<>();
+    private static final Map<String, String> USER_SESSION = new ConcurrentHashMap<>();
 
     private final Object lock = new Object();
 
     @OnOpen
-    public void onOpen(@PathParam("uid") Long uid, Session session) throws IOException {
+    public void onOpen(@PathParam("uid") String uid, Session session) throws IOException {
         log.debug("ChatWebSocketHandler onOpen");
         registerSession(session, uid);
 
@@ -74,7 +75,7 @@ public class WebSocketHandler {
         // friend 好友请求、同步好友请求、删除好友、同步删除好友、更新好友、同步更新好友、获取好友、同步好友信息
         String service = map.get("service").toString();
         String cmd = map.get("cmd").toString();
-        Long to, from;
+        String to, from;
         String msg = "";
 
         //  用户消息
@@ -83,11 +84,11 @@ public class WebSocketHandler {
             resMap.put("service", service);
             resMap.put("cmd", cmd);
 
-            from = Long.valueOf(params.get("from").toString());
+            from = params.get("from").toString();
             if ("syncMyInfo".equals(cmd)) {
 
                 try {
-                    User user = userService.getUser(from);
+                    User user = userService.getUserById(from);
                     resMap.put("code", ApiCodeDefined.SUCCESS.getValue());
                     resMap.put("response", user);
                 } catch (CommonInternalErrorException e) {
@@ -96,7 +97,8 @@ public class WebSocketHandler {
                 }
 
                 msg = JsonUtil.object2Json(resMap);
-                sendMessageTo(msg, from);
+                sendMessageTo(msg, from, cmd);
+                return;
             }
 
             // 搜索用户
@@ -112,12 +114,14 @@ public class WebSocketHandler {
                 }
 
                 msg = JsonUtil.object2Json(resMap);
-                sendMessageTo(msg, from);
+                sendMessageTo(msg, from, cmd);
+
+                return;
             }
 
             // 添加好友
             if ("addFriend".equals(cmd)) {
-                Long friendUid = Long.valueOf(params.get("friendUid").toString());
+                String friendUid = params.get("friendUid").toString();
 
                 try {
                     User user = friendService.addFriend(from, friendUid);
@@ -129,10 +133,33 @@ public class WebSocketHandler {
                 }
 
                 msg = JsonUtil.object2Json(resMap);
-                sendMessageTo(msg, from);
+                sendMessageTo(msg, from, cmd);
+
+                return;
             }
 
-            log.debug("向[{}]发送[{}]消息---内容为[{}]", from, cmd, msg);
+            // 删除好友
+            if ("deleteFriend".equals(cmd)) {
+                String friendUid = params.get("friendUid").toString();
+
+                try {
+                    friendService.deleteFriend(from, friendUid);
+                    resMap.put("code", ApiCodeDefined.SUCCESS.getValue());
+
+                    Map<String, Object> temp = newHashMap();
+                    temp.put("friendUid", friendUid);
+                    resMap.put("response", temp);
+                } catch (CommonInternalErrorException e) {
+                    resMap.put("code", e.getCode());
+                    resMap.put("response", e.getMessage());
+                }
+
+                msg = JsonUtil.object2Json(resMap);
+                sendMessageTo(msg, from, cmd);
+
+                return;
+            }
+
         } else if ("".equals(service)) {
 
         }
@@ -166,10 +193,12 @@ public class WebSocketHandler {
      * @param message
      * @param to
      */
-    public void sendMessageTo(String message, Long to) {
+    public void sendMessageTo(String message, String to, String cmd) {
         if (WS_SESSION.size() > 0 && null != WS_SESSION.get(to)) {
             Session session = WS_SESSION.get(to);
             session.getAsyncRemote().sendText(message);
+
+            log.debug("向[{}]发送[{}]消息---内容为[{}]", to, cmd, message);
         }
     }
 
@@ -193,7 +222,7 @@ public class WebSocketHandler {
      * @param session
      * @param uid
      */
-    private void registerSession(Session session, Long uid) {
+    private void registerSession(Session session, String uid) {
         Object obj1 = this.lock;
         synchronized (this.lock) {
             WS_SESSION.put(uid, session);
@@ -210,7 +239,7 @@ public class WebSocketHandler {
     private void runregisterSession(Session session) {
         Object obj1 = this.lock;
         synchronized (this.lock) {
-            Long uid = USER_SESSION.get(session.getId());
+            String uid = USER_SESSION.get(session.getId());
             USER_SESSION.remove(session.getId());
             WS_SESSION.remove(uid);
         }

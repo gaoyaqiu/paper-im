@@ -16,7 +16,25 @@ public interface IFriendService {
      * @param friendId
      * @return
      */
-    Boolean isFriend(Long uid, Long friendId) throws CommonInternalErrorException;
+    Boolean isFriend(String uid, String friendId) throws CommonInternalErrorException;
 
-    User addFriend(Long from, Long friendUid) throws CommonInternalErrorException;
+    /**
+     * 添加好友,并返回好友信息.
+     *
+     * @param from
+     * @param friendUid
+     * @return
+     * @throws CommonInternalErrorException
+     */
+    User addFriend(String from, String friendUid) throws CommonInternalErrorException;
+
+    /**
+     * 删除好友 （物理删除）.
+     *
+     * @param from
+     * @param friendUid
+     * @return
+     * @throws CommonInternalErrorException
+     */
+    void deleteFriend(String from, String friendUid) throws CommonInternalErrorException;
 }

@@ -87,6 +87,11 @@
     delete from gyq_friends
     where f_id = #{fId,jdbcType=BIGINT}
   </delete>
+
+  <delete id="deleteFriend">
+    delete from gyq_friends
+    <include refid="Example_Where_Clause" />
+  </delete>
   <insert id="insert" parameterType="com.gyq.im.core.entity.GyqFriends">
     insert into gyq_friends (f_id, f_uid, f_friend_uid, 
       f_status, f_created, f_updated, 
