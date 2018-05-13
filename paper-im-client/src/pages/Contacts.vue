@@ -19,14 +19,9 @@
         </cell>
       </group>
       <group class="u-card" title="好友列表">
-        <cell v-for="friend in friendslist" :title="friend.alias" :key="friend.account" is-link :link="friend.link">
-          <img class="icon" slot="icon" width="20" :src="userInfos[friend.account].avatar">
+        <cell v-for="friend in friendslist" :title="friend.alias" :key="friend.userUid" is-link :link="friend.link">
+          <img class="icon" slot="icon" width="20" :src="userInfos[friend.userUid].userFace">
         </cell>
-        <!-- <RecyclerView
-          :prerender="5"
-          :item="Cell" 
-          :list="friendslist">
-        </RecyclerView> -->
       </group>
     </div>
   </div>
@@ -37,35 +32,17 @@
 export default {
   computed: {
     friendslist () {
+        console.log('this.$store.state.userInfos', this.$store.state.userInfos)
+        console.log('this.$store.state.friendslist', this.$store.state.friendslist)
       return this.$store.state.friendslist.filter(item => {
-        let account = item.account
-        let thisAttrs = this.userInfos[account]
-        let alias = thisAttrs.alias ? thisAttrs.alias.trim() : ''
-        item.alias = alias || thisAttrs.nick || account
-        item.link = `/namecard/${item.account}`
-        if ((!thisAttrs.isFriend) || (thisAttrs.isBlack)) {
+        let thisAttrs = this.userInfos[item.userUid]
+
+        item.alias = item.loginName
+        item.link = `/namecard/${item.userUid}`
+        if ((!thisAttrs.isFriend)) {
           return false
         }
         return true
-      })
-    },
-    blacklist () {
-      return this.$store.state.blacklist.filter(item => {
-        let account = item.account
-        let thisAttrs = this.userInfos[account]
-        let alias = thisAttrs.alias ? thisAttrs.alias.trim() : ''
-        item.alias = alias || thisAttrs.nick || account
-        item.link = `/namecard/${item.account}`
-        if (!thisAttrs.isFriend) {
-          return false
-        }
-        return true
-      })
-    },
-    robotslist () {
-      return this.$store.state.robotslist.map(item => {
-        item.link = `/namecard/${item.account}`
-        return item
       })
     },
     userInfos () {

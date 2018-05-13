@@ -45,7 +45,8 @@ export function formatUserInfo(obj) {
         sign: obj.userSign || '',
         custom,
         createTime: obj.userCreated || (new Date()).getTime(),
-        updateTime: obj.userUpdated || (new Date()).getTime()
+        updateTime: obj.userUpdated || (new Date()).getTime(),
+        isFriend: obj.isFriend
     })
 
     return result

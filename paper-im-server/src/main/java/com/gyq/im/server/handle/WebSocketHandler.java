@@ -14,6 +14,7 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -91,6 +92,22 @@ public class WebSocketHandler {
                     User user = userService.getUserById(from);
                     resMap.put("code", ApiCodeDefined.SUCCESS.getValue());
                     resMap.put("response", user);
+                } catch (CommonInternalErrorException e) {
+                    resMap.put("code", e.getCode());
+                    resMap.put("response", e.getMessage());
+                }
+
+                msg = JsonUtil.object2Json(resMap);
+                sendMessageTo(msg, from, cmd);
+                return;
+            }
+
+            if ("syncFriends".equals(cmd)) {
+
+                try {
+                    List<User> friends = userService.findFriends(from);
+                    resMap.put("code", ApiCodeDefined.SUCCESS.getValue());
+                    resMap.put("response", friends);
                 } catch (CommonInternalErrorException e) {
                     resMap.put("code", e.getCode());
                     resMap.put("response", e.getMessage());

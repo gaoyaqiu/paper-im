@@ -18,7 +18,6 @@ export function searchUsers({state, commit}, obj) {
 }
 
 export function onSearchUser(obj) {
-    console.log("searchUserDone....", obj);
     let code = obj.code;
     if (code == "60000") {
         store.commit('updateSearchlist', {

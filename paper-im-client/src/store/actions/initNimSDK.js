@@ -38,9 +38,20 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
             };
         },
         onsync: function () {
+            // 同步个人信息
             var data = {
                 service: 'user',
                 cmd: 'syncMyInfo',
+                params: {
+                    'from': loginInfo.uid
+                }
+            }
+            this.onsend(data)
+
+            // 同步好友消息
+            var data = {
+                service: 'user',
+                cmd: 'syncFriends',
                 params: {
                     'from': loginInfo.uid
                 }
@@ -61,24 +72,31 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
             let service = msg.service;
 
             if (service == "user") {
-                // 获取当前用户信息完成
-                if (cmd == 'syncMyInfo') {
-                    onMyInfo(msg);
-                }
 
-                // 搜索用户完成
-                if (cmd == 'getUsers') {
-                    onSearchUser(msg)
-                }
+                switch (cmd) {
+                    //  获取当前用户信息完成
+                    case 'syncMyInfo':
+                        onMyInfo(msg);
+                        break;
+                    // 搜索用户完成
+                    case 'getUsers':
+                        onSearchUser(msg)
+                        break;
+                    // 添加好友回调
+                    case 'addFriend':
+                        onUpdateFriend(msg)
+                        break
+                    // 删除回调
+                    case 'deleteFriend':
+                        onDeleteFriend(msg)
+                        break
+                    // 同步好友信息
+                    case 'syncFriends':
+                        im.onSyncFriends(msg)
+                        break
+                    default:
+                        break;
 
-                // 添加好友回调
-                if (cmd == 'addFriend') {
-                    onUpdateFriend(msg)
-                }
-
-                // 删除回调
-                if (cmd == 'deleteFriend') {
-                    onDeleteFriend(msg)
                 }
             }
         },
@@ -116,6 +134,13 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
                 }
             }
             this.onsend(data)
+        },
+        onSyncFriends: function (data) {
+
+            let friends = data.response
+            // 更新好友列表
+            commit('updateFriends', friends)
+            commit('updateUserInfoByArray', friends)
         }
     }
 

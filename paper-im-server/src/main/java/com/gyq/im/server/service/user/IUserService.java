@@ -3,6 +3,8 @@ package com.gyq.im.server.service.user;
 import com.gyq.im.common.exception.CommonInternalErrorException;
 import com.gyq.im.server.controller.user.User;
 
+import java.util.List;
+
 /**
  * @auther gaoyaqiu
  * @date 2018/3/25
@@ -51,4 +53,12 @@ public interface IUserService {
      * @return
      */
     User getUserById(String uid, String fromUid) throws CommonInternalErrorException;
+
+    /**
+     * 获取用户好友列表.
+     *
+     * @param from
+     * @return
+     */
+    List<User> findFriends(String from);
 }

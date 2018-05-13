@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import store from '../store'
+import {formatUserInfo} from '../store/actions/userInfo'
 
 if (!Function.prototype.bind) {
     Function.prototype.bind = function () {
@@ -60,10 +61,18 @@ Utils.mergeObject = function (dest, src) {
     return dest
 }
 
-Utils.mergeObjArray = function (dest, src) {
-    dest.push(src)
+Utils.mergeArray = function (dest, src) {
+    if(this.isArray(src)) {
+        for(var k in src) {
+            dest.push(formatUserInfo(src[k]))
+        }
+    } else {
+        dest.push(formatUserInfo(src))
+    }
+
     return dest
 }
+
 
 Utils.mergeVueObject = function (dest, src) {
     let keys = Object.keys(src)
@@ -351,6 +360,18 @@ Utils.getTeamUpdateInfo = function (msg) {
 
 Utils.isArray = function (o) {
     return Object.prototype.toString.call(o) == '[object Array]';
+}
+
+Utils.unique = function (arrays, key) {
+    var res = [];
+    var json = {};
+    for(var i = 0; i < arrays.length; i++){
+        if(!json[arrays[i][key]]){
+            res.push(arrays[i]);
+            json[arrays[i][key]] = 1;
+        }
+    }
+    return res;
 }
 
 Utils.teamConfigMap = {

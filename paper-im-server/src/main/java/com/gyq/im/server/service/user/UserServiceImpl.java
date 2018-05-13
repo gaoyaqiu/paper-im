@@ -3,6 +3,7 @@ package com.gyq.im.server.service.user;
 import com.gyq.im.common.enums.ApiCodeDefined;
 import com.gyq.im.common.enums.GlobalEnums;
 import com.gyq.im.common.exception.CommonInternalErrorException;
+import com.gyq.im.common.tools.utils.ArrayUtil;
 import com.gyq.im.common.tools.utils.BeanCopierUtils;
 import com.gyq.im.common.tools.utils.MD5EncryptUtil;
 import com.gyq.im.common.tools.utils.RandomUtil;
@@ -16,7 +17,11 @@ import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * @auther gaoyaqiu
@@ -146,6 +151,27 @@ public class UserServiceImpl implements IUserService {
         }
 
         return user;
+    }
+
+    @Override
+    public List<User> findFriends(String from) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userUid", from);
+        params.put("userStatus", GlobalEnums.Status.DELETED.getValue());
+        List<User> list = newArrayList();
+        List<GyqUser> userList = userService.findFriends(params);
+        if (!ArrayUtil.isNullOrEmpty(userList)) {
+            list = userList.stream().map(gyqUser -> {
+                User user = new User();
+                BeanCopierUtils.copyProperties(gyqUser, user);
+                user.setLoginName(gyqUser.getUserLoginName());
+                user.setUserUid(gyqUser.getUserUid().toString());
+                user.setIsFriend(true);
+                return user;
+            }).collect(Collectors.toList());
+        }
+
+        return list;
     }
 
 }

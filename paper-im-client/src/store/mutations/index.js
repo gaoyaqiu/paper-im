@@ -7,7 +7,6 @@ import util from '../../utils'
 import config from '../../configs'
 import Vue from 'Vue'
 
-
 export default {
     updateRefreshState(state) {
         state.isRefresh = false
@@ -35,52 +34,45 @@ export default {
         cookie.setCookie('sdktoken', loginInfo.sdktoken)
     },
     updateMyInfo(state, myInfo) {
-        console.log("updateMyInfo", myInfo);
         state.myInfo = util.mergeObject(state.myInfo, myInfo)
-        console.log("state.myInfo", state.myInfo);
     },
-    updateUserInfo(state, user, friendsId = undefined) {
-        console.log("-----userInfos", user);
-        console.log("-----friendsId", friendsId);
-
-        if(user != undefined) {
-            let userInfos = state.userInfos
-            let userUid = user.userUid
-            if (userUid) {
-                userInfos[userUid] = util.mergeObject(userInfos[userUid], user)
-            }
-
-            state.userInfos = util.mergeObject(state.userInfos, userInfos)
-
-            return
+    updateUserInfo(state, user) {
+        let userInfos = state.userInfos
+        let userUid = user.userUid
+        if (userUid) {
+            userInfos[userUid] = util.mergeObject(userInfos[userUid], user)
         }
 
-   /*     for(var key in state.userInfos) {
-            console.log("friendsId" + friendsId + ",,," + key);
-            if(key == friendsId) {
-                console.log("sss");
-                state.userInfos[key].isFriend = false;
-            }
-        }
+        state.userInfos = util.mergeObject(state.userInfos, userInfos)
 
-        console.log("-----userInfos", state.userInfos);*/
+        console.log("state.userInfos", state.userInfos);
     },
-    updateFriends(state, friends, friendsId) {
-        if (friends != undefined) {
-            let isExist = false
-            state.friendslist.map(item => {
-                if (item.uid == friends) {
-                    isExist = true
-                }
-            })
-
-            if (!isExist) {
-                state.friendslist = util.mergeObjArray(state.friendslist, friends)
-            }
-
-            return
+    updateUserInfoByArray(state, users) {
+        let userInfos = state.userInfos
+        for (var key in users) {
+            let userUid = users[key].userUid
+            userInfos[userUid] = util.mergeObject(userInfos[userUid], users[key])
         }
 
+        state.userInfos = util.mergeObject(state.userInfos, userInfos)
+
+        console.log("state.userInfos", state.userInfos);
+    },
+    updateUserInfoByUid(state, friendsId) {
+        for (var key in state.userInfos) {
+            if (key == friendsId) {
+                state.userInfos[key].isFriend = false
+                break
+            }
+        }
+    },
+    updateFriends(state, friends) {
+        state.friendslist = util.mergeArray(state.friendslist, friends)
+        state.friendslist = util.unique(state.friendslist, 'userUid')
+
+        console.log("state.friendslist", state.friendslist);
+    },
+    updateFriendsByUid(state, friendsId) {
         // 移除好友
         let index = -1
         for (var i = 0; i < state.friendslist.length; i++) {

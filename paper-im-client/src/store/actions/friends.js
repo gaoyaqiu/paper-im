@@ -19,8 +19,6 @@ export function onFriends(friends) {
 
 // 更新好友资料，添加好友成功
 export function onUpdateFriend(obj) {
-    console.log("onUpdateFriend....", obj);
-
     let code = obj.code;
     if (code != "20000") {
         return false
@@ -36,20 +34,16 @@ export function onUpdateFriend(obj) {
 
 // 删除好友
 export function onDeleteFriend(obj) {
-    console.log("onDeleteFriend....", obj);
-
     let code = obj.code;
     if (code != "20000") {
         return false
     }
 
-    let friends = obj.response.friendUid
+    let friends = obj.response.friendUid;
     // 更新好友列表
-    store.commit('updateFriends', undefined, friends)
-
-    console.log("-----friends", friends);
+    store.commit('updateFriendsByUid', friends);
     // 更新好友资料
-    store.commit('updateUserInfo', undefined, friends)
+    store.commit('updateUserInfoByUid', friends);
 }
 
 export function onSyncFriendAction(obj) {

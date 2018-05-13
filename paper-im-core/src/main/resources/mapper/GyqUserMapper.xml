@@ -98,6 +98,25 @@
     </if>
     <include refid="common.Pagination_Limit" />
   </select>
+
+  <select id="selectListByUid" resultMap="BaseResultMap" resultType="list">
+    SELECT
+    *
+    FROM
+    (
+    SELECT
+    gf.f_friend_uid fuid
+    FROM
+    gyq_user gu
+    RIGHT JOIN gyq_friends gf ON gu.user_uid = gf.f_uid
+    WHERE
+    gu.user_uid =  #{params.userUid,jdbcType=BIGINT}
+    and
+    <![CDATA[ gu.user_status < #{params.userStatus,jdbcType=INTEGER} ]]>
+    ) ffu
+    LEFT JOIN gyq_user gu ON gu.user_uid = ffu.fuid
+  </select>
+
   <insert id="insertBatch" parameterType="java.util.List">
     insert into gyq_user (user_uid, 
       user_login_name, user_pwd, user_nick_name, 

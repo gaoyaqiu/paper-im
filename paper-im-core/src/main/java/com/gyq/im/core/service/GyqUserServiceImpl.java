@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+
 @Service("gyqUserService")
 public class GyqUserServiceImpl extends BaseService<GyqUser, GyqUserMapper> implements IGyqUserService {
     private GyqUserMapper mapper;
@@ -76,5 +78,10 @@ public class GyqUserServiceImpl extends BaseService<GyqUser, GyqUserMapper> impl
         
         logger.debug("批量新增结束");
         return n;
+    }
+
+    @Override
+    public List<GyqUser> findFriends(Map<String, Object> params) {
+        return mapper.selectListByUid(params);
     }
 }
