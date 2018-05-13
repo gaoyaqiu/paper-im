@@ -4,8 +4,11 @@ import com.gyq.im.common.context.SpringContextUtil;
 import com.gyq.im.common.enums.ApiCodeDefined;
 import com.gyq.im.common.exception.CommonInternalErrorException;
 import com.gyq.im.common.tools.utils.JsonUtil;
+import com.gyq.im.core.entity.GyqMessage;
 import com.gyq.im.server.controller.user.User;
 import com.gyq.im.server.service.friend.IFriendService;
+import com.gyq.im.server.service.message.IMessageService;
+import com.gyq.im.server.service.message.Message;
 import com.gyq.im.server.service.user.IUserService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,7 +16,6 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -60,14 +62,14 @@ public class WebSocketHandler {
     }
 
     @OnMessage
-    public void onMessage(String message, Session session) throws IOException {
-        log.debug("接收到客户端消息---内容为[{}]", message);
+    public void onMessage(String clientMsg, Session session) throws IOException {
+        log.debug("接收到客户端消息---内容为[{}]", clientMsg);
         IUserService userService = (IUserService) SpringContextUtil.getBean("userServiceImpl");
         IFriendService friendService = (IFriendService) SpringContextUtil.getBean("friendServiceImpl");
+        IMessageService messageService = (IMessageService) SpringContextUtil.getBean("messageServiceImpl");
 
-        Map<String, Object> resMap = newHashMap();
-        Map<String, Object> map = JsonUtil.json2Map(null, message);
 
+        Map<String, Object> map = JsonUtil.json2Map(null, clientMsg);
         // user 获取用户信息、同步个人信息、更新个人信息
         // notify 通知下线消息、下线系统消息、广播消息
         // sync 同步完成状态、同步群组人员完成状态
@@ -76,18 +78,18 @@ public class WebSocketHandler {
         // friend 好友请求、同步好友请求、删除好友、同步删除好友、更新好友、同步更新好友、获取好友、同步好友信息
         String service = map.get("service").toString();
         String cmd = map.get("cmd").toString();
-        String to, from;
         String msg = "";
+        Map<String, Object> params = (Map<String, Object>) map.get("params");
+        String from = params.get("from").toString();
+        Map<String, Object> resMap = newHashMap();
+        resMap.put("service", service);
+        resMap.put("cmd", cmd);
 
         //  用户消息
         if ("user".equals(service)) {
-            Map<String, Object> params = (Map<String, Object>) map.get("params");
-            resMap.put("service", service);
-            resMap.put("cmd", cmd);
 
-            from = params.get("from").toString();
+
             if ("syncMyInfo".equals(cmd)) {
-
                 try {
                     User user = userService.getUserById(from);
                     resMap.put("code", ApiCodeDefined.SUCCESS.getValue());
@@ -177,10 +179,41 @@ public class WebSocketHandler {
                 return;
             }
 
-        } else if ("".equals(service)) {
+        } else if ("msg".equals(service)) {
+            // p2p 、群消息
+            String scene = params.get("scene").toString();
+            // text、file
+            String type = params.get("type").toString();
+            String text = params.get("text").toString();
+            String to = params.get("to").toString();
+            String sessionId = params.get("sessionId").toString();
 
+            // 文本消息
+            if (type.equals("text")) {
+                // 给个人发消息
+                if (scene.equals("p2p")) {
+                    GyqMessage gyqMessage = new GyqMessage();
+                    gyqMessage.setFromId(Long.valueOf(from));
+                    gyqMessage.setToId(Long.valueOf(to));
+                    gyqMessage.setMsgContent(text);
+
+                    try {
+                        Message message = messageService.sendP2PMsg(gyqMessage);
+                        resMap.put("code", ApiCodeDefined.SUCCESS.getValue());
+
+                        message.setSessionId(sessionId);
+                        message.setType(type);
+                        resMap.put("response", message);
+                    } catch (CommonInternalErrorException e) {
+                        resMap.put("code", e.getCode());
+                        resMap.put("response", e.getMessage());
+                    }
+
+                    msg = JsonUtil.object2Json(resMap);
+                    sendMessageTo(msg, from, cmd);
+                }
+            }
         }
-
 
  /*       String to = map.get("to").toString();
         String from = map.get("from").toString();

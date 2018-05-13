@@ -24,6 +24,8 @@ public class GyqMessageServiceImpl extends BaseService<GyqMessage, GyqMessageMap
         obj.setMsgId(KeyGeneratorUtil.getKey());
         obj.setMsgStatus(GlobalEnums.Status.NEW.getValue());
         obj.setMsgCreated(DateUtil.getCurrentTimeMills());
+        // 默认消息未读
+        obj.setMsgBizStatus(2);
         int n = mapper.insertSelective(obj);
 		if(n != 1) {
 			logger.error("新增失败: {}", "");

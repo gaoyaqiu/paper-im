@@ -177,7 +177,7 @@ export default {
         store.commit('updateMsgByIdClient', msgs)
         for (let sessionId in tempSessionMap) {
             state.msgs[sessionId].sort((a, b) => {
-                if (a.time === b.time) {
+                if (a.msgCreated === b.msgCreated) {
                     // 机器人消息，回复消息时间和提问消息时间相同，提问在前，回复在后
                     if (a.type === 'robot' && b.type === 'robot') {
                         if (a.content && a.content.msgOut) {
@@ -188,7 +188,7 @@ export default {
                         }
                     }
                 }
-                return a.time - b.time
+                return a.msgCreated - b.msgCreated
             })
             if (sessionId === state.currSessionId) {
                 store.commit('updateCurrSessionMsgs', {
@@ -199,6 +199,7 @@ export default {
     },
     // 更新追加消息，追加一条消息
     putMsg(state, msg) {
+        console.log('putMsg---', msg)
         let sessionId = msg.sessionId
         if (!state.msgs[sessionId]) {
             state.msgs[sessionId] = []
@@ -206,17 +207,19 @@ export default {
         store.commit('updateMsgByIdClient', msg)
         let tempMsgs = state.msgs[sessionId]
         let lastMsgIndex = tempMsgs.length - 1
-        if (tempMsgs.length === 0 || msg.time >= tempMsgs[lastMsgIndex].time) {
+        if (tempMsgs.length === 0 || msg.msgCreated >= tempMsgs[lastMsgIndex].msgCreated) {
             tempMsgs.push(msg)
         } else {
             for (let i = lastMsgIndex; i >= 0; i--) {
                 let currMsg = tempMsgs[i]
-                if (msg.time >= currMsg.time) {
+                if (msg.msgCreated >= currMsg.msgCreated) {
                     state.msgs[sessionId].splice(i, 0, msg)
                     break
                 }
             }
         }
+
+        console.log('state.msgs---', state.msgs)
     },
     // 删除消息列表消息
     deleteMsg(state, msg) {
@@ -253,13 +256,14 @@ export default {
     },
     // 用idClient 更新消息，目前用于消息撤回
     updateMsgByIdClient(state, msgs) {
+        console.log('updateMsgByIdClient----', msgs)
         if (!Array.isArray(msgs)) {
             msgs = [msgs]
         }
         let tempTime = (new Date()).getTime()
         msgs.forEach(msg => {
             // 有idClient 且 5分钟以内的消息
-            if (msg.idClient && (tempTime - msg.time < 1000 * 300)) {
+            if (msg.idClient && (tempTime - msg.msgCreated < 1000 * 300)) {
                 state.msgsMap[msg.idClient] = msg
             }
         })
@@ -274,10 +278,13 @@ export default {
                 state.currSessionId = obj.sessionId
             }
         }
+
+        console.log('state.currSessionId----', state.currSessionId)
     },
     // 更新当前会话列表的聊天记录，包括历史消息、单聊消息等，不包括聊天室消息
     // replace: 替换idClient的消息
     updateCurrSessionMsgs(state, obj) {
+        console.log('updateCurrSessionMsgs---', obj)
         let type = obj.type || ''
         if (type === 'destroy') { // 清空会话消息
             state.currSessionMsgs = []
@@ -303,42 +310,45 @@ export default {
                 state.currSessionMsgs = []
                 let lastMsgTime = 0
                 currSessionMsgs.forEach(msg => {
-                    if ((msg.time - lastMsgTime) > 1000 * 60 * 5) {
-                        lastMsgTime = msg.time
+                    if ((msg.msgCreated - lastMsgTime) > 1000 * 60 * 5) {
+                        lastMsgTime = msg.msgCreated
                         state.currSessionMsgs.push({
                             type: 'timeTag',
-                            text: util.formatDate(msg.time, false)
+                            text: util.formatDate(msg.msgCreated, false)
                         })
                     }
                     state.currSessionMsgs.push(msg)
                 })
             }
         } else if (type === 'put') { // 追加一条消息
+            console.log('put.......')
             let newMsg = obj.msg
             let lastMsgTime = 0
             let lenCurrMsgs = state.currSessionMsgs.length
             if (lenCurrMsgs > 0) {
-                lastMsgTime = state.currSessionMsgs[lenCurrMsgs - 1].time
+                lastMsgTime = state.currSessionMsgs[lenCurrMsgs - 1].msgCreated
             }
             if (newMsg) {
-                if ((newMsg.time - lastMsgTime) > 1000 * 60 * 5) {
+                if ((newMsg.msgCreated - lastMsgTime) > 1000 * 60 * 5) {
                     state.currSessionMsgs.push({
                         type: 'timeTag',
-                        text: util.formatDate(newMsg.time, false)
+                        text: util.formatDate(newMsg.msgCreated, false)
                     })
                 }
                 state.currSessionMsgs.push(newMsg)
             }
+
+            console.log('state.currSessionMsgs---', state.currSessionMsgs)
         } else if (type === 'concat') {
             // 一般用于历史消息拼接
             let currSessionMsgs = []
             let lastMsgTime = 0
             obj.msgs.forEach(msg => {
-                if ((msg.time - lastMsgTime) > 1000 * 60 * 5) {
-                    lastMsgTime = msg.time
+                if ((msg.msgCreated - lastMsgTime) > 1000 * 60 * 5) {
+                    lastMsgTime = msg.msgCreated
                     currSessionMsgs.push({
                         type: 'timeTag',
-                        text: util.formatDate(msg.time, false)
+                        text: util.formatDate(msg.msgCreated, false)
                     })
                 }
                 currSessionMsgs.push(msg)
@@ -369,7 +379,7 @@ export default {
             sysMsgs = [sysMsgs]
         }
         sysMsgs = sysMsgs.map(msg => {
-            msg.showTime = util.formatDate(msg.time, false)
+            msg.showTime = util.formatDate(msg.msgCreated, false)
             return msg
         })
         // state.sysMsgs = nim.mergeSysMsgs(state.sysMsgs, sysMsgs)
@@ -394,7 +404,7 @@ export default {
             sysMsgs = [sysMsgs]
         }
         sysMsgs = sysMsgs.map(msg => {
-            msg.showTime = util.formatDate(msg.time, false)
+            msg.showTime = util.formatDate(msg.msgCreated, false)
             return msg
         })
         // state.customSysMsgs = nim.mergeSysMsgs(state.customSysMsgs, sysMsgs)

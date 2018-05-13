@@ -13,7 +13,7 @@
     <div
       v-else-if="msg.flow==='in' || msg.flow==='out'"
       :idClient="msg.idClient"
-      :time="msg.time"
+      :time="msg.msgCreated"
       :flow="msg.flow"
       :type="msg.type"
       v-touch:hold="revocateMsg"
@@ -174,8 +174,9 @@
         // 标记发送的时间
         item.showText = item.text
       } else if (item.type === 'text') {
+          console.log('sssss', item)
         // 文本消息
-        item.showText = util.escape(item.text)
+        item.showText = util.escape(item.msgContent)
         if (/\[[^\]]+\]/.test(item.showText)) {
           let emojiItems = item.showText.match(/\[[^\]]+\]/g)
           emojiItems.forEach(text => {
@@ -185,6 +186,7 @@
             }
           })
         }
+        console.log('item.showText', item.showText)
       } else if (item.type === 'custom') {
         let content = JSON.parse(item.content)
         // type 1 为猜拳消息

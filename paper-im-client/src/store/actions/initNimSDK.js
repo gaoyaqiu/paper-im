@@ -5,8 +5,8 @@
 import config from '@/configs'
 import {onMyInfo} from './userInfo'
 import {onSearchUser} from './search'
-import {onUpdateFriend, onDeleteFriend} from './friends'
-import util from '../../utils'
+import {onDeleteFriend, onUpdateFriend} from './friends'
+import {onSendMsgDone} from './msgs'
 
 export function initNimSDK({state, commit, dispatch}, loginInfo) {
     dispatch('showLoading')
@@ -65,7 +65,7 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
 
 
         },
-        // 消息处理
+        // 消息回调处理
         onmsg: function (response) {
             let msg = JSON.parse(response);
             let cmd = msg.cmd;
@@ -97,6 +97,12 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
                     default:
                         break;
 
+                }
+            } else if (service == 'msg') {
+                switch (cmd) {
+                    case 'sendMsg':
+                        onSendMsgDone(msg)
+                        break
                 }
             }
         },
@@ -141,6 +147,21 @@ export function initNimSDK({state, commit, dispatch}, loginInfo) {
             // 更新好友列表
             commit('updateFriends', friends)
             commit('updateUserInfoByArray', friends)
+        },
+        sendText: function (obj) {
+            var data = {
+                service: 'msg',
+                cmd: 'sendMsg',
+                params: {
+                    'from': loginInfo.uid,
+                    'to': obj.to,
+                    'scene': obj.scene,
+                    'text': obj.text,
+                    'type': obj.type,
+                    'sessionId': obj.sessionId
+                }
+            }
+            this.onsend(data)
         }
     }
 
